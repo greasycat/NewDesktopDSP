@@ -1,0 +1,21 @@
+TrialName,Source,Destination,TrueAngle
+dsp1_02,Well,Picnic Table,230
+dsp1_03,Chair,Piano,276
+dsp1_04,Chair,Trash Can,295.5
+dsp1_05,Mailbox,Bookshelf,313
+dsp1_06,Mailbox,Harp,320
+dsp1_07,Telescope,Trash Can,338
+dsp1_08,Telescope,Wheelbarrow,348
+dsp1_09,Plant,Well,27.5
+dsp1_10,Plant,Piano,331
+dsp1_11,Picnic Table,Wheelbarrow,60
+dsp1_13,Stove,Chair,59
+dsp1_14,Stove,Bookshelf,25
+dsp1_16,Piano,Harp,90
+dsp1_17,Trash Can,Picnic Table,167
+dsp1_18,Trash Can,Well,92.5
+dsp1_19,Bookshelf,Plant,176.5
+dsp1_21,Wheelbarrow,Mailbox,132
+dsp1_22,Wheelbarrow,Stove,219
+dsp1_23,Harp,Plant,203
+dsp1_24,Harp,Telescope,180
