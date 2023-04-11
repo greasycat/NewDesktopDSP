@@ -13,7 +13,6 @@ def analyze():
     loader.load(learning=True)
 
     shortcut_map = ShortcutMap("extra/new_walls.csv", "extra/objects.csv", "extra/new_shortcuts.csv")
-    print(shortcut_map.get_shortest_path("Plant", "Harp"))
 
     # Currently the movement analyzer can only handle normal (not alternative) trials, will add that later this week
     movement_analyzer = MovementAnalyzer(loader, shortcut_map=shortcut_map)
@@ -30,7 +29,7 @@ def analyze():
     sample = loader.sample_subject(5)
     subject_names = [subject.name for subject in sample]
 
-    movement_analyzer.plot_for_these_subjects(["OL08JO"], save_only=False, start=17, end=18)
+    movement_analyzer.plot_for_these_subjects(subject_names, save_only=False)
     # movement_analyzer.plot_for_these_subjects(sample, save_only=True)
 
 
