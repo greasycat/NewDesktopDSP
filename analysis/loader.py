@@ -1,6 +1,6 @@
 from pathlib import Path
 from analysis.subject import Subject
-from analysis.movement import MovementData, Shortcuts
+from analysis.movement import MovementData  # Shortcuts
 from analysis.rotation import RotationData
 from analysis.trial_configuration import TrialConfiguration
 import csv
@@ -33,7 +33,7 @@ class Loader:
     def get_subjects(self, subjects):
         return [self.subjects[subject] for subject in subjects]
 
-    def load(self, force=False, learning=False):
+    def load(self, force=False, learning=False, image_file="maze1.png"):
         if not self.root_dir:
             return
 
@@ -44,12 +44,12 @@ class Loader:
             self.walls.append(tuple(map(int, pair)))
 
         # Load Shortcuts
-        self.shortcuts = Shortcuts(yield_csv_todict(self.extra_dir.joinpath("shortcuts_1.csv")))
+        # self.shortcuts = Shortcuts(yield_csv_todict(self.extra_dir.joinpath("shortcuts_1.csv")))
 
         # Load Trial Configuration
         self.trial_configuration = TrialConfiguration(yield_csv_todict(self.extra_dir.joinpath("trial_1.csv")))
 
-        self.image_maze1 = self.image_dir.joinpath("maze1.png")
+        self.image_maze1 = self.image_dir.joinpath(image_file)
 
         # Get participants dirs
         for participant_dir in self.root_dir.iterdir():
@@ -77,9 +77,17 @@ class Loader:
             except KeyError as e:
                 # print(e)
                 if not force:
-                    raise CorruptedDataError("Makesure you have all the filenames correct, otherwise exclude the folder"+ str(participant_dir))
+                    raise CorruptedDataError(
+                        "Makesure you have all the filenames correct, otherwise exclude the folder" + str(
+                            participant_dir))
 
             self.subjects[participant_dir.name] = subject
+
+    def sample_subject(self, n=5) -> [Subject]:
+        """randomly sample n subjects"""
+        import random
+        keys = random.sample(self.subjects.keys(), n)
+        return [self.subjects[key] for key in keys]
 
 
 def load_rotation(path):

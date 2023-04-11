@@ -13,3 +13,6 @@ class Grid:
 
     def get_block_pos(self, pos):
         return np.floor(self.offset_to_origin(pos) / self.unit_vectors) + np.array([1, 1])
+
+    def get_map_pos(self, pos):
+        return self.offset_to_origin(pos) / self.unit_vectors

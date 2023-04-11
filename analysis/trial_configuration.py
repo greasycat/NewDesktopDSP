@@ -8,6 +8,9 @@ class TrialConfiguration:
     def get_source_destination_pair_by_name(self, name):
         return self.configuration[name]["Source"], self.configuration[name]["Destination"]
 
+    def get_source_destination_pair_by_index(self, index):
+        return self.configuration[index]["Source"], self.configuration[index]["Destination"]
+
     def get_true_angle(self, name):
         return float(self.configuration[name]["TrueAngle"])
 
