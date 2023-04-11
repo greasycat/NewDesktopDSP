@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>analysis.loader.Loader &#8212; NewDesktopDSP 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="analysis.loader.CorruptedDataError" href="analysis.loader.CorruptedDataError.html" />
+    <link rel="prev" title="analysis.loader.yield_csv_todict" href="analysis.loader.yield_csv_todict.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="analysis-loader-loader">
+<h1>analysis.loader.Loader<a class="headerlink" href="#analysis-loader-loader" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="analysis.loader.Loader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">analysis.loader.</span></span><span class="sig-name descname"><span class="pre">Loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'extra'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'images'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.loader.Loader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#analysis.loader.Loader.get_subjects" title="analysis.loader.Loader.get_subjects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_subjects</span></code></a></p></td>
+<td><p>Get a list of Subject objects based on the provided subject names.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#analysis.loader.Loader.load" title="analysis.loader.Loader.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a></p></td>
+<td><p>Load subjects, movements, and rotations data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#analysis.loader.Loader.sample_subject" title="analysis.loader.Loader.sample_subject"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample_subject</span></code></a></p></td>
+<td><p>Randomly sample n subjects.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="analysis.loader.Loader.get_subjects">
+<span class="sig-name descname"><span class="pre">get_subjects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subjects</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="analysis.subject.Subject.html#analysis.subject.Subject" title="analysis.subject.Subject"><span class="pre">Subject</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#analysis.loader.Loader.get_subjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of Subject objects based on the provided subject names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>subjects</strong> – A list of subject names.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of Subject objects.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="analysis.loader.Loader.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'maze1.png'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.loader.Loader.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load subjects, movements, and rotations data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>force</strong> – Whether to raise an exception if there are insufficient data files.</p></li>
+<li><p><strong>learning</strong> – Whether to include learning trials.</p></li>
+<li><p><strong>image_file</strong> – Name of the image file containing the maze.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="analysis.loader.Loader.sample_subject">
+<span class="sig-name descname"><span class="pre">sample_subject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="analysis.subject.Subject.html#analysis.subject.Subject" title="analysis.subject.Subject"><span class="pre">Subject</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#analysis.loader.Loader.sample_subject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Randomly sample n subjects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n</strong> – The number of subjects to sample.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of sampled Subject objects.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">NewDesktopDSP</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="analysis.html">analysis</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analysis.grid.html">analysis.grid</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="analysis.loader.html">analysis.loader</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="analysis.loader.load_csv_tolist.html">analysis.loader.load_csv_tolist</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.loader.load_meta.html">analysis.loader.load_meta</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.loader.load_movement.html">analysis.loader.load_movement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.loader.load_rotation.html">analysis.loader.load_rotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.loader.load_timeout.html">analysis.loader.load_timeout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.loader.yield_csv_todict.html">analysis.loader.yield_csv_todict</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">analysis.loader.Loader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.loader.CorruptedDataError.html">analysis.loader.CorruptedDataError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.loader.InsufficientDataError.html">analysis.loader.InsufficientDataError</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.movement_analyzer.html">analysis.movement_analyzer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.movement_data.html">analysis.movement_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.rotation_analyzer.html">analysis.rotation_analyzer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.rotation_data.html">analysis.rotation_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.shortcut_map.html">analysis.shortcut_map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.subject.html">analysis.subject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.trial_configuration.html">analysis.trial_configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.utility.html">analysis.utility</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="analysis.html">analysis</a><ul>
+  <li><a href="analysis.loader.html">analysis.loader</a><ul>
+      <li>Previous: <a href="analysis.loader.yield_csv_todict.html" title="previous chapter">analysis.loader.yield_csv_todict</a></li>
+      <li>Next: <a href="analysis.loader.CorruptedDataError.html" title="next chapter">analysis.loader.CorruptedDataError</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Carol He, Frederick Jin.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/generated/analysis.loader.Loader.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

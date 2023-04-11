@@ -1,0 +1,10 @@
+Loader
+========
+
+.. automodule:: analysis.loader
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :inherited-members:
+
+

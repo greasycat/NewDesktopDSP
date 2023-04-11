@@ -1,9 +1,11 @@
 from pathlib import Path
 from analysis.subject import Subject
-from analysis.movement import MovementData  # Shortcuts
-from analysis.rotation import RotationData
+from analysis.movement_data import MovementData
+from analysis.rotation_data import RotationData
 from analysis.trial_configuration import TrialConfiguration
 import csv
+
+from typing import List, Dict, Iterator, Union, Tuple
 
 MOVEMENT_FILE = 'movement.csv'
 ROTATION_FILE = 'rotation.csv'
@@ -20,31 +22,42 @@ class InsufficientDataError(Exception):
 
 
 class Loader:
-    def __init__(self, data_dir='data', extra_dir="extra", image_dir="images"):
+    def __init__(self, data_dir: str = 'data', extra_dir: str = "extra", image_dir: str = "images"):
+        """
+        Loader class for loading subjects, movements, and rotations data.
+
+        :param data_dir: Directory containing the data files.
+        :param extra_dir: Directory containing the extra files like walls, shortcuts, and trial configuration.
+        :param image_dir: Directory containing the images.
+        """
         self.root_dir = Path(data_dir)
         self.extra_dir = Path(extra_dir)
         self.image_dir = Path(image_dir)
-        self.subjects = {}
-        self.walls = []
+        self.subjects: Dict[str, Subject] = {}
         self.shortcuts = None
         self.trial_configuration = None
         self.image_maze1 = None
 
-    def get_subjects(self, subjects):
+    def get_subjects(self, subjects: List[str]) -> List[Subject]:
+        """
+        Get a list of Subject objects based on the provided subject names.
+
+        :param subjects: A list of subject names.
+        :return: A list of Subject objects.
+        """
         return [self.subjects[subject] for subject in subjects]
 
-    def load(self, force=False, learning=False, image_file="maze1.png"):
+    def load(self, force: bool = False, learning: bool = False, image_file: str = "maze1.png"):
+        """
+        Load subjects, movements, and rotations data.
+
+        :param force: Whether to raise an exception if there are insufficient data files.
+        :param learning: Whether to include learning trials.
+        :param image_file: Name of the image file containing the maze.
+        """
+
         if not self.root_dir:
             return
-
-        # Load Walls
-        for pair in load_csv_tolist(self.extra_dir.joinpath("walls.csv")):
-            if len(pair) < 2:
-                continue
-            self.walls.append(tuple(map(int, pair)))
-
-        # Load Shortcuts
-        # self.shortcuts = Shortcuts(yield_csv_todict(self.extra_dir.joinpath("shortcuts_1.csv")))
 
         # Load Trial Configuration
         self.trial_configuration = TrialConfiguration(yield_csv_todict(self.extra_dir.joinpath("trial_1.csv")))
@@ -72,10 +85,8 @@ class Loader:
                 subject.meta = load_meta(file_paths[META_FILE])
                 subject.rotation_sequence = load_rotation(file_paths[ROTATION_FILE])
                 subject.movement_sequence = load_movement(file_paths[MOVEMENT_FILE], learning=learning)
-                # TODO: add timeout here
                 subject.timeout_trials = load_timeout(file_paths[TIMEOUT_FILE])
-            except KeyError as e:
-                # print(e)
+            except KeyError:
                 if not force:
                     raise CorruptedDataError(
                         "Makesure you have all the filenames correct, otherwise exclude the folder" + str(
@@ -83,8 +94,13 @@ class Loader:
 
             self.subjects[participant_dir.name] = subject
 
-    def sample_subject(self, n=5) -> [Subject]:
-        """randomly sample n subjects"""
+    def sample_subject(self, n: int = 5) -> List[Subject]:
+        """
+        Randomly sample n subjects.
+
+        :param n: The number of subjects to sample.
+        :return: A list of sampled Subject objects.
+        """
         import random
         keys = random.sample(self.subjects.keys(), n)
         return [self.subjects[key] for key in keys]

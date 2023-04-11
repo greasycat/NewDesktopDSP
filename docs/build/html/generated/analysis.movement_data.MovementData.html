@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>analysis.movement_data.MovementData &#8212; NewDesktopDSP 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="analysis.rotation_analyzer" href="analysis.rotation_analyzer.html" />
+    <link rel="prev" title="analysis.movement_data" href="analysis.movement_data.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="analysis-movement-data-movementdata">
+<h1>analysis.movement_data.MovementData<a class="headerlink" href="#analysis-movement-data-movementdata" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="analysis.movement_data.MovementData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">analysis.movement_data.</span></span><span class="sig-name descname"><span class="pre">MovementData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trial_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trial_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trial_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.movement_data.MovementData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#analysis.movement_data.MovementData.from_str" title="analysis.movement_data.MovementData.from_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_str</span></code></a></p></td>
+<td><p>Create a MovementData object from a string representation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#analysis.movement_data.MovementData.get_vector" title="analysis.movement_data.MovementData.get_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vector</span></code></a></p></td>
+<td><p>Get the x, y coordinate vector of the movement.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="analysis.movement_data.MovementData.from_str">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#analysis.movement_data.MovementData" title="analysis.movement_data.MovementData"><span class="pre">MovementData</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#analysis.movement_data.MovementData.from_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a MovementData object from a string representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> – The string representation of the MovementData object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A MovementData object if the string can be parsed, otherwise None.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[<a class="reference internal" href="#analysis.movement_data.MovementData" title="analysis.movement_data.MovementData">MovementData</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="analysis.movement_data.MovementData.get_vector">
+<span class="sig-name descname"><span class="pre">get_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#analysis.movement_data.MovementData.get_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the x, y coordinate vector of the movement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A numpy array containing the x, y coordinates.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">NewDesktopDSP</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="analysis.html">analysis</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analysis.grid.html">analysis.grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.loader.html">analysis.loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.movement_analyzer.html">analysis.movement_analyzer</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="analysis.movement_data.html">analysis.movement_data</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">analysis.movement_data.MovementData</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.rotation_analyzer.html">analysis.rotation_analyzer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.rotation_data.html">analysis.rotation_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.shortcut_map.html">analysis.shortcut_map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.subject.html">analysis.subject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.trial_configuration.html">analysis.trial_configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.utility.html">analysis.utility</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="analysis.html">analysis</a><ul>
+  <li><a href="analysis.movement_data.html">analysis.movement_data</a><ul>
+      <li>Previous: <a href="analysis.movement_data.html" title="previous chapter">analysis.movement_data</a></li>
+      <li>Next: <a href="analysis.rotation_analyzer.html" title="next chapter">analysis.rotation_analyzer</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Carol He, Frederick Jin.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/generated/analysis.movement_data.MovementData.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

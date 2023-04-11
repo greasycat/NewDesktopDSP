@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>analysis.movement_analyzer.MovementAnalyzer &#8212; NewDesktopDSP 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="analysis.movement_data" href="analysis.movement_data.html" />
+    <link rel="prev" title="analysis.movement_analyzer" href="analysis.movement_analyzer.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="analysis-movement-analyzer-movementanalyzer">
+<h1>analysis.movement_analyzer.MovementAnalyzer<a class="headerlink" href="#analysis-movement-analyzer-movementanalyzer" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="analysis.movement_analyzer.MovementAnalyzer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">analysis.movement_analyzer.</span></span><span class="sig-name descname"><span class="pre">MovementAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="analysis.loader.Loader.html#analysis.loader.Loader" title="analysis.loader.Loader"><span class="pre">Loader</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">shortcut_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="analysis.shortcut_map.ShortcutMap.html#analysis.shortcut_map.ShortcutMap" title="analysis.shortcut_map.ShortcutMap"><span class="pre">ShortcutMap</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([3,</span> <span class="pre">0])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_actual_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([225,</span> <span class="pre">225])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([11,</span> <span class="pre">11])</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.movement_analyzer.MovementAnalyzer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#analysis.movement_analyzer.MovementAnalyzer.calculate_efficiency_for_all_subjects" title="analysis.movement_analyzer.MovementAnalyzer.calculate_efficiency_for_all_subjects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_efficiency_for_all_subjects</span></code></a></p></td>
+<td><p>Calculates the efficiency of all subjects in the dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#analysis.movement_analyzer.MovementAnalyzer.calculate_efficiency_for_one_subject" title="analysis.movement_analyzer.MovementAnalyzer.calculate_efficiency_for_one_subject"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_efficiency_for_one_subject</span></code></a></p></td>
+<td><p>Calculate efficiency for one subject between the given trial range.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#analysis.movement_analyzer.MovementAnalyzer.calculate_efficiency_for_these_subjects" title="analysis.movement_analyzer.MovementAnalyzer.calculate_efficiency_for_these_subjects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_efficiency_for_these_subjects</span></code></a></p></td>
+<td><p>Calculate efficiency for a list of subjects between the given trial range.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#analysis.movement_analyzer.MovementAnalyzer.calculate_failure_for_all_subjects" title="analysis.movement_analyzer.MovementAnalyzer.calculate_failure_for_all_subjects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_failure_for_all_subjects</span></code></a></p></td>
+<td><p>Calculate failure count for all subjects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#analysis.movement_analyzer.MovementAnalyzer.calculate_failure_for_these_subjects" title="analysis.movement_analyzer.MovementAnalyzer.calculate_failure_for_these_subjects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_failure_for_these_subjects</span></code></a></p></td>
+<td><p>Calculate failure count for a list of subjects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#analysis.movement_analyzer.MovementAnalyzer.plot_for_these_subjects" title="analysis.movement_analyzer.MovementAnalyzer.plot_for_these_subjects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_for_these_subjects</span></code></a></p></td>
+<td><p>Plot movement paths for a list of subjects between the given trial range.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#analysis.movement_analyzer.MovementAnalyzer.plots_for_all_subjects" title="analysis.movement_analyzer.MovementAnalyzer.plots_for_all_subjects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plots_for_all_subjects</span></code></a></p></td>
+<td><p>Saves plots for all subjects in the dataset.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="analysis.movement_analyzer.MovementAnalyzer.calculate_efficiency_for_all_subjects">
+<span class="sig-name descname"><span class="pre">calculate_efficiency_for_all_subjects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">23</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#analysis.movement_analyzer.MovementAnalyzer.calculate_efficiency_for_all_subjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the efficiency of all subjects in the dataset.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>start (int): The index of the first trial to be included in the calculation (inclusive).
+end (int): The index of the last trial to be included in the calculation (exclusive).
+excluding (list): A list of subject names to be excluded from the calculation.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A dictionary mapping subject names to their efficiency scores.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="analysis.movement_analyzer.MovementAnalyzer.calculate_efficiency_for_one_subject">
+<span class="sig-name descname"><span class="pre">calculate_efficiency_for_one_subject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#analysis.movement_analyzer.MovementAnalyzer.calculate_efficiency_for_one_subject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate efficiency for one subject between the given trial range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>subject_name</strong> – The name of the subject.</p></li>
+<li><p><strong>start</strong> – The starting trial number (inclusive).</p></li>
+<li><p><strong>end</strong> – The ending trial number (exclusive).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary with trial numbers as keys and efficiency values as values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[int, float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="analysis.movement_analyzer.MovementAnalyzer.calculate_efficiency_for_these_subjects">
+<span class="sig-name descname"><span class="pre">calculate_efficiency_for_these_subjects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subjects</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">23</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#analysis.movement_analyzer.MovementAnalyzer.calculate_efficiency_for_these_subjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate efficiency for a list of subjects between the given trial range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>subjects</strong> – A list of subject names.</p></li>
+<li><p><strong>start</strong> – The starting trial number (inclusive).</p></li>
+<li><p><strong>end</strong> – The ending trial number (exclusive).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary with subject names as keys and efficiency dictionaries as values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Dict[int, float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="analysis.movement_analyzer.MovementAnalyzer.calculate_failure_for_all_subjects">
+<span class="sig-name descname"><span class="pre">calculate_failure_for_all_subjects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">excluding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#analysis.movement_analyzer.MovementAnalyzer.calculate_failure_for_all_subjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate failure count for all subjects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>excluding</strong> – A list of subject names to be excluded from the calculation.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary with subject names as keys and failure counts as values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="analysis.movement_analyzer.MovementAnalyzer.calculate_failure_for_these_subjects">
+<span class="sig-name descname"><span class="pre">calculate_failure_for_these_subjects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subjects</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#analysis.movement_analyzer.MovementAnalyzer.calculate_failure_for_these_subjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate failure count for a list of subjects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>subjects</strong> – A list of subject names.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary with subject names as keys and failure counts as values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="analysis.movement_analyzer.MovementAnalyzer.plot_for_these_subjects">
+<span class="sig-name descname"><span class="pre">plot_for_these_subjects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subjects</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">23</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.movement_analyzer.MovementAnalyzer.plot_for_these_subjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot movement paths for a list of subjects between the given trial range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>subjects</strong> – A list of subject names.</p></li>
+<li><p><strong>start</strong> – The starting trial number (inclusive).</p></li>
+<li><p><strong>end</strong> – The ending trial number (exclusive).</p></li>
+<li><p><strong>save_only</strong> – If True, the plot will only be saved and not displayed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="analysis.movement_analyzer.MovementAnalyzer.plots_for_all_subjects">
+<span class="sig-name descname"><span class="pre">plots_for_all_subjects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">23</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.movement_analyzer.MovementAnalyzer.plots_for_all_subjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves plots for all subjects in the dataset.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>start (int): The index of the first trial to be plotted (inclusive).
+end (int): The index of the last trial to be plotted (exclusive).
+excluding (list): A list of subject names to be excluded from the plots.
+save_only (bool): If True, save the plots without showing them.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">NewDesktopDSP</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="analysis.html">analysis</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analysis.grid.html">analysis.grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.loader.html">analysis.loader</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="analysis.movement_analyzer.html">analysis.movement_analyzer</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">analysis.movement_analyzer.MovementAnalyzer</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.movement_data.html">analysis.movement_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.rotation_analyzer.html">analysis.rotation_analyzer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.rotation_data.html">analysis.rotation_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.shortcut_map.html">analysis.shortcut_map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.subject.html">analysis.subject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.trial_configuration.html">analysis.trial_configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.utility.html">analysis.utility</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="analysis.html">analysis</a><ul>
+  <li><a href="analysis.movement_analyzer.html">analysis.movement_analyzer</a><ul>
+      <li>Previous: <a href="analysis.movement_analyzer.html" title="previous chapter">analysis.movement_analyzer</a></li>
+      <li>Next: <a href="analysis.movement_data.html" title="next chapter">analysis.movement_data</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Carol He, Frederick Jin.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/generated/analysis.movement_analyzer.MovementAnalyzer.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

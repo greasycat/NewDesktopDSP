@@ -7,9 +7,9 @@ def tuple_sub_one(t):
     return tuple(map(lambda x: x - 1, t))
 
 
-def list_add_one(l):
-    return list(map(lambda y: tuple(map(lambda x: x + 1, y)), l))
+def list_add_one(li):
+    return list(map(lambda y: tuple(map(lambda x: x + 1, y)), li))
 
 
-def list_sub_one(l):
-    return list(map(lambda y: tuple(map(lambda x: x - 1, y)), l))
+def list_sub_one(li):
+    return list(map(lambda y: tuple(map(lambda x: x - 1, y)), li))

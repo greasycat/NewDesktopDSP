@@ -18,19 +18,24 @@ def analyze():
     movement_analyzer = MovementAnalyzer(loader, shortcut_map=shortcut_map)
 
     # rotation analyzer gives the absolute angular error for each trial (both normal and alternative)
-    # rotation_analyzer = RotationAnalyzer(loader)
-    #
+    rotation_analyzer = RotationAnalyzer(loader)
+
     # excluding = ["CY4GO", "PE12LE", "JU11SI", "LU24FR"]
 
-    # efficiencies = movement_analyzer.calculate_efficiency_for_all_subjects(excluding=excluding)
-    # num_failure = movement_analyzer.calculate_failure_for_all_subjects(excluding=excluding)
-
-    # random.seed(0)
-    sample = loader.sample_subject(5)
+    random.seed(0)
+    sample = loader.sample_subject(1)
     subject_names = [subject.name for subject in sample]
 
-    movement_analyzer.plot_for_these_subjects(subject_names, save_only=False)
-    # movement_analyzer.plot_for_these_subjects(sample, save_only=True)
+    efficiencies = movement_analyzer.calculate_efficiency_for_these_subjects(subject_names)
+    print(efficiencies)
+
+    failures = movement_analyzer.calculate_failure_for_these_subjects(subject_names)
+    print(failures)
+
+    errors = rotation_analyzer.calculate_estimation_error_for_one(subject_names[0])
+    print(errors)
+
+    # movement_analyzer.plot_for_these_subjects(subject_names, save_only=False)
 
 
 if __name__ == "__main__":
