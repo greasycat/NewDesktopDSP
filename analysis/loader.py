@@ -102,7 +102,7 @@ class Loader:
         :return: A list of sampled Subject objects.
         """
         import random
-        keys = random.sample(self.subjects.keys(), n)
+        keys = random.sample(list(self.subjects.keys()), n)
         return [self.subjects[key] for key in keys]
 
 
