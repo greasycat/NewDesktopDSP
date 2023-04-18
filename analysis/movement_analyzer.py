@@ -61,25 +61,34 @@ class MovementAnalyzer:
             # convert to 0 indexed
             movements = list_sub_one([self.grid.get_block_pos(move.get_vector()) for move in movements])
 
-            movements = [start] + movements
-
             # remove consecutive duplicates
             movements = [movements[i] for i in range(len(movements)) if
                          i == 0 or
                          (not np.array_equal(movements[i], movements[i - 1])) and
                          not self.shortcut_map.check_coord_is_wall(movements[i])]
 
+            fraction_length = len(movements) // 3
+
+            # check if start point is in first third of movements array
+            if start in movements[:fraction_length]:
+                # remove all movements before start
+                movements = movements[movements.index(start):]
+
+            else:
+                # add start to movements
+                movements = [start] + movements
+
             # check offset is dot product not equal to 1,
             # then add paths from get_shortest_path_from_two_coords to interpolate
             i = 0
-            is_end_in_movements = False
-            where_is_the_end = 0
+            # is_end_in_movements = False
+            # where_is_the_end = 0
             while i < len(movements) - 1:
 
                 # mark if the movement already contains an end
-                if np.array_equal(movements[i + 1], end):
-                    is_end_in_movements = True
-                    where_is_the_end = i + 1
+                # if np.array_equal(movements[i + 1], end):
+                #     is_end_in_movements = True
+                #     where_is_the_end = i + 1
 
                 offset = np.array(movements[i + 1]) - np.array(movements[i])
                 if offset.dot(offset) > 1:
@@ -89,9 +98,10 @@ class MovementAnalyzer:
                 else:
                     i += 1
 
-            # remove all the elements after end
-            if is_end_in_movements:
-                movements = movements[:where_is_the_end + 1]
+            # check if end point is in last third of movements array
+            if end in movements[-fraction_length:]:
+                # remove all the elements after end
+                movements = movements[:movements.index(end) + 1]
             else:
                 # get the shortest path from last element to end
                 shortcut = self.shortcut_map.get_shortest_path_from_two_coords(movements[-1], end)

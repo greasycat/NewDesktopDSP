@@ -30,6 +30,9 @@ class MovementData:
         """
         return np.array([self.x, self.y])
 
+    def get_rotation(self) -> float:
+        return self.rotation
+
     @staticmethod
     def from_str(s: str = "") -> Optional["MovementData"]:
         """
