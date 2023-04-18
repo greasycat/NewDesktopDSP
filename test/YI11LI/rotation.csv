@@ -1,0 +1,21 @@
+TrialName, Trial, Time, ParticipantX, ParticipantY, TargetX, TargetY, AngleType, Angle
+dsp1_05,3,20.468,216.1,31.84,85.43562,152.4335,Estimated Target Angle,321.4499
+dsp1_22,4,14.084,112.6,113,33.2869,16.02,Estimated Target Angle,62.64996
+dsp1_24,5,15.528,131.5,152.1,132.1,25.70001,Estimated Target Angle,129.1001
+dsp1_18,6,17.502,50.9,191.8,173.9869,186.2335,Estimated Target Angle,111.2
+dsp1_17,7,11.725,50.9,191.8,73.35,85.83,Estimated Target Angle,155.7
+dsp1_08,8,11.357,132.7,10.91,113.01,97.43001,Estimated Target Angle,49.55001
+dsp1_09,9,15.861,93.4,33.1,173.9869,186.2335,Estimated Target Angle,8.699989
+dsp1_21,10,13.292,112.6,113,200.2,31.3,Estimated Target Angle,3.999928
+dsp1_03,11,7.253,216.1,132.1,29.0869,152.6335,Estimated Target Angle,210.5
+dsp1_16,12,5.662,13.2,153.35,126.83,142.38,Estimated Target Angle,138.15
+dsp1_07,13,9.827,132.7,10.91,52.37,207.04,Estimated Target Angle,342.8
+dsp1_06,14,7.693,216.1,31.84,126.83,142.38,Estimated Target Angle,309.65
+dsp1_04,15,5.588,216.1,132.1,52.37,207.04,Estimated Target Angle,226.4501
+dsp1_19,16,19.543,72.6,151.2,80.3,32.00002,Estimated Target Angle,247.0001
+dsp1_11,17,10.771,71.5,72.2,113.01,97.43001,Estimated Target Angle,109.4
+dsp1_23,18,10.388,131.5,152.1,80.3,32.00002,Estimated Target Angle,141
+dsp1_13,19,8.655,32.2,31.9,200.3,132.5,Estimated Target Angle,76.80007
+dsp1_10,20,8.316,93.4,33.1,29.0869,152.6335,Estimated Target Angle,37.19998
+dsp1_14,21,9.61,32.2,31.9,85.43562,152.4335,Estimated Target Angle,41.35
+dsp1_02,22,11.121,174.2,171.2,73.35,85.83,Estimated Target Angle,207.4
