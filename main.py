@@ -35,7 +35,7 @@ def analyze():
     errors = rotation_analyzer.calculate_estimation_error_for_one(subject_names[0])
     print(errors)
 
-    # movement_analyzer.plot_for_these_subjects(subject_names, save_only=False)
+    movement_analyzer.plot_for_these_subjects(subject_names, save_only=False)
 
 
 if __name__ == "__main__":
