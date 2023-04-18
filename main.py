@@ -36,10 +36,10 @@ def analyze():
     # print(errors)
 
     # movement_analyzer.plot_for_these_subjects(subject_names, save_only=False, start=3, end=23)
-    # movement_analyzer.export_processed_data_for_these_subjects(subject_names)
+    movement_analyzer.export_processed_data_for_these_subjects(subject_names)
 
-    frechet = movement_analyzer.calculate_frechet_for_one_subject(subject_names[0], start=3, end=4)
-    print(frechet)
+    # frechet = movement_analyzer.calculate_frechet_for_one_subject(subject_names[0], start=3, end=4)
+    # print(frechet)
 
 if __name__ == "__main__":
     analyze()

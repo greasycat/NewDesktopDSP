@@ -449,10 +449,10 @@ class MovementAnalyzer:
             print(f"Calculating Frechet distance for {subject_name} trial {n} from {source} to {destination}...")
 
             # combine x and y into a single list of tuples
-            p = list(zip(x-0.5, y-0.5))
+            p = list(zip(x - 0.5, y - 0.5))
             _, q = self.learning_map.get_shortest_path(source, destination)
 
-            p,q = self.interpolate_the_shorter(p, q)
+            p, q = self.interpolate_the_shorter(p, q)
 
             # combine p q as a matrix where col 1 is p and col 2 is q
             pq = np.concatenate((p, q), axis=1)
@@ -483,7 +483,7 @@ class MovementAnalyzer:
         for i in range(length):
             new_path.append(smaller_path[i])
             if i in inserting_indices:
-                new_path.append((np.array(smaller_path[i]) + np.array(smaller_path[i + 1]))/2)
+                new_path.append((np.array(smaller_path[i]) + np.array(smaller_path[i + 1])) / 2)
 
         print(f"New path length: {len(new_path)}")
 
@@ -491,12 +491,3 @@ class MovementAnalyzer:
             return new_path, q
         else:
             return p, new_path
-
-
-
-
-
-
-
-
-
