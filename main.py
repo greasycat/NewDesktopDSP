@@ -23,7 +23,7 @@ def analyze():
     # excluding = ["CY4GO", "PE12LE", "JU11SI", "LU24FR"]
 
     random.seed(0)
-    sample = loader.sample_subject(3)
+    sample = loader.sample_subject(10)
     subject_names = [subject.name for subject in sample]
 
     efficiencies = movement_analyzer.calculate_efficiency_for_these_subjects(subject_names)
@@ -32,14 +32,18 @@ def analyze():
     failures = movement_analyzer.calculate_failure_for_these_subjects(subject_names)
     print(failures)
 
-    # errors = rotation_analyzer.calculate_estimation_error_for_one(subject_names[0])
-    # print(errors)
+    errors = rotation_analyzer.calculate_estimation_error_for_one(subject_names[0])
+    print(errors)
 
     # movement_analyzer.plot_for_these_subjects(subject_names, save_only=False, start=3, end=23)
     movement_analyzer.export_processed_data_for_these_subjects(subject_names)
 
-    # frechet = movement_analyzer.calculate_frechet_for_one_subject(subject_names[0], start=3, end=4)
-    # print(frechet)
+    frechet = movement_analyzer.calculate_frechet_for_these_subjects(subject_names)
+    print(frechet)
+
+    # movement_analyzer.export_processed_data_for_all_subjects()
+    # movement_analyzer.export_distance_summary_for_all_subjects()
+
 
 if __name__ == "__main__":
     analyze()

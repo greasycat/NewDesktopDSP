@@ -74,6 +74,9 @@ class ShortcutMap:
         except KeyError:
             return None
 
+    def get_shortest_distance(self, start_object, end_object):
+        return self.get_shortest_path(start_object, end_object)[0]
+
     def load_walls(self, file_name):
         with open(file_name, "r") as csvfile:
             reader = csv.reader(csvfile)

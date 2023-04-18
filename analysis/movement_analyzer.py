@@ -210,7 +210,7 @@ class MovementAnalyzer:
         if not save_only:
             plt.show()
 
-    def export_processed_data(self, subject_name, start=3, end=23, folder="output"):
+    def export_processed_data(self, subject_name, start=3, end=23, folder="processed_data"):
         """
         Export the processed data to a folder.
         :param subject_name: The name of the subject.
@@ -259,11 +259,11 @@ class MovementAnalyzer:
                                      movement["data"].rotation])
                     pass
 
-    def export_processed_data_for_these_subjects(self, subject_names, start=3, end=23, folder="output"):
+    def export_processed_data_for_these_subjects(self, subject_names, start=3, end=23, folder="processed_data"):
         for subject_name in subject_names:
             self.export_processed_data(subject_name, start, end, folder)
 
-    def export_processed_data_for_all_subjects(self, start=3, end=23, folder="output"):
+    def export_processed_data_for_all_subjects(self, start=3, end=23, folder="processed_data"):
         for subject_name in self.subjects.keys():
             self.export_processed_data(subject_name, start, end, folder)
 
@@ -446,48 +446,109 @@ class MovementAnalyzer:
 
             # get name of the start and end points
             source, destination = self.get_source_destination(subject_name, n)
-            print(f"Calculating Frechet distance for {subject_name} trial {n} from {source} to {destination}...")
 
             # combine x and y into a single list of tuples
+            # pos in p and q here are 0-indexed
             p = list(zip(x - 0.5, y - 0.5))
             _, q = self.learning_map.get_shortest_path(source, destination)
-
-            p, q = self.interpolate_the_shorter(p, q)
-
-            # combine p q as a matrix where col 1 is p and col 2 is q
-            pq = np.concatenate((p, q), axis=1)
+            _, r = self.shortcut_map.get_shortest_path(source, destination)
 
             # calculate Frechet distance
             import similaritymeasures
-            distances[n] = similaritymeasures.frechet_dist(pq, 2)
+            distances[n] = {"learn": similaritymeasures.frechet_dist(p, q),
+                            "shortcut": similaritymeasures.frechet_dist(p, r)}
 
         return distances
         pass
 
-    def interpolate_the_shorter(self, p, q):
+    def calculate_frechet_for_these_subjects(self, subjects: List[str], start=3, end=23, use_cache=True):
         """
-        Interpolate the shorter path to match the length of the longer path.
-        :param p: The first path.
-        :param q: The second path.
-        :return: The two paths with the same length.
+        Calculate Frechet distance for a list of subjects between the given trial range.
+
+        :param subjects: A list of subject names.
+        :param start: The starting trial number (inclusive).
+        :param end: The ending trial number (exclusive).
+        :param use_cache: If True, use the cache to load data.
         """
-        smaller_path = p if len(p) < len(q) else q
-        length = len(smaller_path)
-        diff = abs(len(p) - len(q))
+        distances = {}
+        for subject in subjects:
+            distances[subject] = self.calculate_frechet_for_one_subject(subject, start, end, use_cache)
+        return distances
 
-        inserting_step = length // diff
-        inserting_indices = [i * inserting_step for i in range(1, diff + 1)]
+    def calculate_frechet_for_all_subjects(self, start=3, end=23, excluding=None, use_cache=True):
+        """
+        Calculate Frechet distance for all subjects between the given trial range.
 
-        new_path = []
-        # print(f"Inserting {diff} points at indices {inserting_indices}...")
-        for i in range(length):
-            new_path.append(smaller_path[i])
-            if i in inserting_indices:
-                new_path.append((np.array(smaller_path[i]) + np.array(smaller_path[i + 1])) / 2)
+        :param start: The starting trial number (inclusive).
+        :param end: The ending trial number (exclusive).
+        :param excluding: A list of subject names to be excluded from the calculation.
+        :param use_cache: If True, use the cache to load data.
+        """
+        if excluding is None:
+            excluding = []
 
-        print(f"New path length: {len(new_path)}")
+        subjects = [subject for subject in self.subjects if subject not in excluding]
 
-        if len(p) < len(q):
-            return new_path, q
-        else:
-            return p, new_path
+        return self.calculate_frechet_for_these_subjects(subjects, start, end, use_cache)
+
+    def export_distance_summary(self, subject_name, start=3, end=23, folder="distance", use_cache=True):
+        """
+        Export the distance summary for one subject between the given trial range.
+
+        :param subject_name: The name of the subject.
+        :param start: The starting trial number (inclusive).
+        :param end: The ending trial number (exclusive).
+        :param folder: The folder to save the summary file.
+        :param use_cache: If True, use the cache to load data.
+        """
+
+        import os
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
+        distances = self.calculate_frechet_for_one_subject(subject_name, start, end, use_cache)
+        header = ["SubjectName", "TrialNumber", "FrechetLearn", "FrechetShortcut", "LearnDistance", "ShortcutDistance"]
+        with open(f"{folder}/distance_summary_{subject_name}.csv", "w") as f:
+            # csv writer
+            import csv
+            writer = csv.writer(f)
+            writer.writerow(header)
+            for n in range(start, end):
+                source, destination = self.get_source_destination(subject_name, n)
+                learn_distance = self.learning_map.get_shortest_distance(source, destination)
+                shortcut_distance = self.shortcut_map.get_shortest_distance(source, destination)
+                writer.writerow([subject_name, n, distances[n]["learn"], distances[n]["shortcut"], learn_distance,
+                                 shortcut_distance])
+
+    def export_distance_summary_for_these_subjects(self, subjects: List[str], start=3, end=23, folder="distance",
+                                                   use_cache=True):
+        """
+        Export the distance summary for a list of subjects between the given trial range.
+
+        :param subjects: A list of subject names.
+        :param start: The starting trial number (inclusive).
+        :param end: The ending trial number (exclusive).
+        :param folder: The folder to save the summary file.
+        :param use_cache: If True, use the cache to load data.
+        """
+        for subject in subjects:
+            print(f"Exporting distance summary for {subject}...")
+            self.export_distance_summary(subject, start, end, folder, use_cache)
+
+    def export_distance_summary_for_all_subjects(self, start=3, end=23, folder="distance", excluding=None,
+                                                 use_cache=True):
+        """
+        Export the distance summary for all subjects between the given trial range.
+
+        :param start: The starting trial number (inclusive).
+        :param end: The ending trial number (exclusive).
+        :param folder: The folder to save the summary file.
+        :param excluding: A list of subject names to be excluded from the calculation.
+        :param use_cache: If True, use the cache to load data.
+        """
+        if excluding is None:
+            excluding = []
+
+        subjects = [subject for subject in self.subjects.keys() if subject not in excluding]
+
+        self.export_distance_summary_for_these_subjects(subjects, start, end, folder, use_cache)
