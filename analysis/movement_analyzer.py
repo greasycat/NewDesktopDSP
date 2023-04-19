@@ -1,3 +1,4 @@
+from __future__ import annotations
 import numpy as np
 
 from analysis.loader import Loader
@@ -11,6 +12,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 from typing import Any, Dict, List, Optional, Tuple
+
 
 import os
 
