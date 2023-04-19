@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pathlib import Path
 from analysis.subject import Subject
 from analysis.movement_data import MovementData

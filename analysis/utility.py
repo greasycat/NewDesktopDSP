@@ -1,3 +1,4 @@
+from __future__ import annotations
 # zero indexed tuple to one indexed tuple
 def tuple_add_one(t):
     return tuple(map(lambda x: x + 1, t))

@@ -1,3 +1,4 @@
+from __future__ import annotations
 # class SubjectMeta:
 #     def __init__(self, subject_id=None, date_completed=None, number_of_learning=None):
 #         self.number_of_learning = number_of_learning
