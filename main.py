@@ -26,13 +26,13 @@ def analyze():
     sample = loader.sample_subject(10)
     subject_names = [subject.name for subject in sample]
 
-    efficiencies = movement_analyzer.calculate_efficiency_for_these_subjects(subject_names)
+    efficiencies = movement_analyzer.calculate_efficiency_for_all_subjects()
     print(efficiencies)
 
     failures = movement_analyzer.calculate_failure_for_these_subjects(subject_names)
     print(failures)
 
-    errors = rotation_analyzer.calculate_estimation_error_for_one(subject_names[0])
+    errors = rotation_analyzer.calculate_estimation_error_for_one_subject(subject_names[0])
     print(errors)
 
     # movement_analyzer.plot_for_these_subjects(subject_names, save_only=False, start=3, end=23)

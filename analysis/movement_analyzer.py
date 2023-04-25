@@ -170,6 +170,7 @@ class MovementAnalyzer:
         Returns:
             None
         """
+        print(f"{subject}, {n}")
 
         if bg_file == "":
             bg_file = self.bg_1
@@ -188,10 +189,8 @@ class MovementAnalyzer:
         trial_name = self.subjects[subject].movement_sequence[n][0].trial_name
         source, destination = self.trial_configuration.get_source_destination_pair_by_name(trial_name)
         shortest = self.shortcut_map.get_shortest_path(source, destination)[0]
-        estimated_distance = len(x) - 1
-        efficiency = estimated_distance / shortest
-        if efficiency < 1:
-            efficiency = 1
+        estimated_distance = len(x)
+        efficiency = self._calculate_efficiency(self.subjects[subject], n, estimated_distance)  
         plt.title(
             f"Subject {subject}\n "
             f"Trial {n - 2}@{trial_name}\n "
@@ -493,64 +492,27 @@ class MovementAnalyzer:
 
         return self.calculate_frechet_for_these_subjects(subjects, start, end, use_cache)
 
-    def export_distance_summary(self, subject_name, start=3, end=23, folder="distance", use_cache=True):
+    def export_distance_summary(self, start=3, end=23, use_cache=True):
         """
         Export the distance summary for one subject between the given trial range.
 
-        :param subject_name: The name of the subject.
         :param start: The starting trial number (inclusive).
         :param end: The ending trial number (exclusive).
-        :param folder: The folder to save the summary file.
         :param use_cache: If True, use the cache to load data.
         """
 
-        import os
-        if not os.path.exists(folder):
-            os.makedirs(folder)
-
-        distances = self.calculate_frechet_for_one_subject(subject_name, start, end, use_cache)
-        header = ["SubjectName", "TrialNumber", "FrechetLearn", "FrechetShortcut", "LearnDistance", "ShortcutDistance"]
-        with open(f"{folder}/distance_summary_{subject_name}.csv", "w") as f:
+        header = ["SubjectName", "TrialNumber", "TrialName", "FrechetLearn", "FrechetShortcut", "LearnDistance", "ShortcutDistance"]
+        with open(f"distance_summary.csv", "w") as f:
             # csv writer
             import csv
             writer = csv.writer(f)
             writer.writerow(header)
-            for n in range(start, end):
-                source, destination = self.get_source_destination(subject_name, n)
-                learn_distance = self.learning_map.get_shortest_distance(source, destination)
-                shortcut_distance = self.shortcut_map.get_shortest_distance(source, destination)
-                writer.writerow([subject_name, n, distances[n]["learn"], distances[n]["shortcut"], learn_distance,
-                                 shortcut_distance])
-
-    def export_distance_summary_for_these_subjects(self, subjects: List[str], start=3, end=23, folder="distance",
-                                                   use_cache=True):
-        """
-        Export the distance summary for a list of subjects between the given trial range.
-
-        :param subjects: A list of subject names.
-        :param start: The starting trial number (inclusive).
-        :param end: The ending trial number (exclusive).
-        :param folder: The folder to save the summary file.
-        :param use_cache: If True, use the cache to load data.
-        """
-        for subject in subjects:
-            print(f"Exporting distance summary for {subject}...")
-            self.export_distance_summary(subject, start, end, folder, use_cache)
-
-    def export_distance_summary_for_all_subjects(self, start=3, end=23, folder="distance", excluding=None,
-                                                 use_cache=True):
-        """
-        Export the distance summary for all subjects between the given trial range.
-
-        :param start: The starting trial number (inclusive).
-        :param end: The ending trial number (exclusive).
-        :param folder: The folder to save the summary file.
-        :param excluding: A list of subject names to be excluded from the calculation.
-        :param use_cache: If True, use the cache to load data.
-        """
-        if excluding is None:
-            excluding = []
-
-        subjects = [subject for subject in self.subjects.keys() if subject not in excluding]
-
-        self.export_distance_summary_for_these_subjects(subjects, start, end, folder, use_cache)
+            for subject_name in self.subjects.keys():
+              distances = self.calculate_frechet_for_one_subject(subject_name, start, end, use_cache)
+              for n in range(start, end):
+                  trial_name = self.subjects[subject_name].movement_sequence[n][0].trial_name
+                  source, destination = self.get_source_destination(subject_name, n)
+                  learn_distance = self.learning_map.get_shortest_distance(source, destination)
+                  shortcut_distance = self.shortcut_map.get_shortest_distance(source, destination)
+                  writer.writerow([subject_name, n, trial_name, distances[n]["learn"], distances[n]["shortcut"], learn_distance,
+                                  shortcut_distance])

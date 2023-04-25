@@ -46,10 +46,10 @@ class RotationAnalyzer:
             print(f"Error: {subject_name} or {trial_number} data files corrupted. Skipping...")
             return None
 
-    def calculate_estimation_error_for_one(self,
-                                           subject_name: str,
-                                           start: int = 3,
-                                           end: int = 23) -> Dict[int, float]:
+    def calculate_estimation_error_for_one_subject(self,
+                                                   subject_name: str,
+                                                   start: int = 3,
+                                                   end: int = 23) -> Dict[int, float]:
         """
         Calculate estimation errors for a specific subject in the given range of trials.
 
@@ -64,10 +64,10 @@ class RotationAnalyzer:
             errors[trial_number] = self.calculate_estimation_error(subject_name, trial_number)
         return errors
 
-    def calculate_all_estimation_error_for_all(self,
-                                               start: int,
-                                               end: int,
-                                               excluding: Optional[List[str]] = None) -> Dict[str, Dict[int, float]]:
+    def calculate_all_estimation_error_for_all_subjects(self,
+                                                        start: int,
+                                                        end: int,
+                                                        excluding: Optional[List[str]] = None) -> Dict[str, Dict[int, float]]:
         """
         Calculate estimation errors for all subjects in the dataset.
 
@@ -83,5 +83,5 @@ class RotationAnalyzer:
         for subject in self.loader.subjects:
             if subject in excluding:
                 continue
-            errors[subject] = self.calculate_estimation_error_for_one(subject, start, end)
+            errors[subject] = self.calculate_estimation_error_for_one_subject(subject, start, end)
         return errors
