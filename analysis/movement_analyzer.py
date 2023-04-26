@@ -3,6 +3,7 @@ import numpy as np
 
 from analysis.loader import Loader
 from analysis.movement_data import MovementData
+from analysis.strategies import Strategy
 from analysis.subject import Subject
 from analysis.grid import Grid
 from analysis.shortcut_map import ShortcutMap
@@ -12,7 +13,6 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 from typing import Any, Dict, List, Optional, Tuple
-
 
 import os
 
@@ -41,6 +41,7 @@ class MovementAnalyzer:
         self.bg_1 = loader.image_maze1
         self.subjects = loader.subjects
         self.cache: Dict[str, Any] = {}
+        self.strategy = Strategy("extra/dsp_coords.txt", "extra/LmOnPath.txt")
 
     def get_source_destination(self, subject_name, trial_number):
         movements = self.subjects[subject_name].movement_sequence[trial_number]
@@ -151,7 +152,7 @@ class MovementAnalyzer:
 
         return ox, oy, continuous_movements, x, y, discrete_movements
 
-    def _draw(self, subject: str, n: int, ox: List[float], oy: List[float], x: List[float], y: List[float],
+    def _draw(self, ax, fig, subject: str, n: int, ox: List[float], oy: List[float], x: List[float], y: List[float],
               bg_file: str = "",
               save_only: bool = False) -> None:
         """
@@ -175,11 +176,13 @@ class MovementAnalyzer:
         if bg_file == "":
             bg_file = self.bg_1
 
-        fig, ax = plt.subplots()
+        # fig, ax = plt.subplots()
+        # ax.clear()
+        plt.close(plt.gcf())
 
-        # self.fig, self.ax = plt.subplots()
-        ax.step(x, y, color='red', alpha=0.2)
-        ax.plot(ox, oy, color='green', alpha=0.2)
+        plt.gcf().set_size_inches(7, 7)
+        plt.step(x, y, color='red', alpha=0.2)
+        plt.plot(ox, oy, color='green', alpha=0.2)
 
         plt.autoscale(False)
         bg = mpimg.imread(bg_file)
@@ -190,18 +193,20 @@ class MovementAnalyzer:
         source, destination = self.trial_configuration.get_source_destination_pair_by_name(trial_name)
         shortest = self.shortcut_map.get_shortest_path(source, destination)[0]
         estimated_distance = len(x)
-        efficiency = self._calculate_efficiency(self.subjects[subject], n, estimated_distance)  
+        efficiency = self._calculate_efficiency(self.subjects[subject], n, estimated_distance)
+        timeout = "Failure (Timeout)" if (n in self.subjects[subject].timeout_trials) else "Success"
         plt.title(
             f"Subject {subject}\n "
             f"Trial {n - 2}@{trial_name}\n "
             f"From {source} to {destination}\n "
             f"Distance: {estimated_distance} "
             f"Shortest: {shortest} "
-            f"Efficiency: {efficiency:.2f}")
+            f"Efficiency: {efficiency:.2f}\n"
+            f"{timeout}"
+        )
         plt.xticks(np.arange(0, self.grid.grid_size[0] + 1, step=1))
         plt.yticks(np.arange(0, self.grid.grid_size[1] + 1, step=1))
         plt.grid()
-        fig.set_size_inches(7, 7)
 
         # create folder if not exist
         if not os.path.exists('path_plot/' + subject):
@@ -399,13 +404,15 @@ class MovementAnalyzer:
         :param save_only: If True, the plot will only be saved and not displayed.
         :param use_cache: If True, use the cache to load data.
         """
+        fig, ax = plt.subplots()
+
         for subject in subjects:
             for n in range(start, end):
                 if use_cache:
                     ox, oy, _, x, y, _ = self._get_cache(subject, n)
                 else:
                     ox, oy, _, x, y, _ = self._load_xy(subject, n)
-                self._draw(subject=subject, n=n, ox=ox, oy=oy, x=x, y=y, save_only=save_only)
+                self._draw(ax=ax, fig=fig, subject=subject, n=n, ox=ox, oy=oy, x=x, y=y, save_only=save_only)
 
     def plots_for_all_subjects(self, start=3, end=23, excluding=None, save_only=False):
         """
@@ -453,11 +460,21 @@ class MovementAnalyzer:
             p = list(zip(x - 0.5, y - 0.5))
             _, q = self.learning_map.get_shortest_path(source, destination)
             _, r = self.shortcut_map.get_shortest_path(source, destination)
+            reversed_r = list(reversed(r))
+
+            topo_r = self.strategy.get_path(source, destination)
+
+            failure = 1 if n in self.subjects[subject_name].timeout_trials else 0
 
             # calculate Frechet distance
             import similaritymeasures
             distances[n] = {"learn": similaritymeasures.frechet_dist(p, q),
-                            "shortcut": similaritymeasures.frechet_dist(p, r)}
+                            "shortcut": similaritymeasures.frechet_dist(p, r),
+                            "shortcut_reversed": similaritymeasures.frechet_dist(p, reversed_r),
+                            "topo": similaritymeasures.frechet_dist(p, topo_r),
+                            "failure": failure,
+                            "trial": n
+                            }
 
         return distances
         pass
@@ -492,6 +509,16 @@ class MovementAnalyzer:
 
         return self.calculate_frechet_for_these_subjects(subjects, start, end, use_cache)
 
+    def plot_all_topological_paths(self, folder="topo_plot", save_only=False):
+        """
+        Plot all topological paths for all subjects between the given trial range.
+
+        :param folder: The folder to save the plots.
+        :param save_only: If True, the plot will only be saved and not displayed.
+        """
+
+        self.strategy.get_all_topological_plots(folder=folder, save_only=save_only)
+
     def export_distance_summary(self, start=3, end=23, use_cache=True):
         """
         Export the distance summary for one subject between the given trial range.
@@ -501,18 +528,27 @@ class MovementAnalyzer:
         :param use_cache: If True, use the cache to load data.
         """
 
-        header = ["SubjectName", "TrialNumber", "TrialName", "FrechetLearn", "FrechetShortcut", "LearnDistance", "ShortcutDistance"]
-        with open(f"distance_summary.csv", "w") as f:
+        header = ["SubjectName", "TrialNumber", "TrialName", "FrechetLearn", "FrechetShortcut", "FrechetReversed",
+                  "FrechetTopo",
+                  "LearnDistance", "ShortcutDistance", "Failure"]
+        with open(f"distance_summary.csv", "w", newline="") as f:
             # csv writer
             import csv
             writer = csv.writer(f)
             writer.writerow(header)
             for subject_name in self.subjects.keys():
-              distances = self.calculate_frechet_for_one_subject(subject_name, start, end, use_cache)
-              for n in range(start, end):
-                  trial_name = self.subjects[subject_name].movement_sequence[n][0].trial_name
-                  source, destination = self.get_source_destination(subject_name, n)
-                  learn_distance = self.learning_map.get_shortest_distance(source, destination)
-                  shortcut_distance = self.shortcut_map.get_shortest_distance(source, destination)
-                  writer.writerow([subject_name, n, trial_name, distances[n]["learn"], distances[n]["shortcut"], learn_distance,
-                                  shortcut_distance])
+                distances = self.calculate_frechet_for_one_subject(subject_name, start, end, use_cache)
+                for n in range(start, end):
+                    trial_name = self.subjects[subject_name].movement_sequence[n][0].trial_name
+                    source, destination = self.get_source_destination(subject_name, n)
+                    learn_distance = self.learning_map.get_shortest_distance(source, destination)
+                    shortcut_distance = self.shortcut_map.get_shortest_distance(source, destination)
+                    writer.writerow([subject_name, n, trial_name,
+                                     distances[n]["learn"],
+                                     distances[n]["shortcut"],
+                                     distances[n]["shortcut_reversed"],
+                                     distances[n]["topo"],
+                                     learn_distance,
+                                     shortcut_distance,
+                                     distances[n]["failure"],
+                                     ])

@@ -64,10 +64,11 @@ class RotationAnalyzer:
             errors[trial_number] = self.calculate_estimation_error(subject_name, trial_number)
         return errors
 
-    def calculate_all_estimation_error_for_all_subjects(self,
-                                                        start: int,
-                                                        end: int,
-                                                        excluding: Optional[List[str]] = None) -> Dict[str, Dict[int, float]]:
+    def calculate_estimation_error_for_all_subjects(self,
+                                                    start: int = 3,
+                                                    end: int = 23,
+                                                    excluding: Optional[List[str]] = None) -> \
+            Dict[str, Dict[int, float]]:
         """
         Calculate estimation errors for all subjects in the dataset.
 

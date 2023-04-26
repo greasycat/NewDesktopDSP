@@ -185,6 +185,28 @@ class ShortcutMap:
 
         return shortest_paths
 
+    def get_all_objects_position(self):
+        pos = []
+        for obj in self.objects:
+            pos.append(self.objects[obj])
+        return pos
+
+    def get_traversability_matrix(self):
+        # create a grid map where all the walls are 0 and all the free space is 1
+        traversability_matrix = np.ones((self.map_width, self.map_height))
+        for x in range(self.map_width):
+            for y in range(self.map_height):
+                if self.check_coord_is_wall((x, y)):
+                    traversability_matrix[x, y] = 0
+
+        # add walls around the map
+        # traversability_matrix = np.pad(traversability_matrix, pad_width=1, mode='constant', constant_values=0)
+
+
+        return traversability_matrix
+
+
+
     def get_shortest_path_from_two_coords(self, coord1, coord2):
         index1 = self.coord_to_index(coord1)
         index2 = self.coord_to_index(coord2)

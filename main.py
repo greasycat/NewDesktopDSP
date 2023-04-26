@@ -2,6 +2,7 @@ from analysis import Loader
 from analysis import MovementAnalyzer, RotationAnalyzer
 import pandas as pd
 from analysis import ShortcutMap
+from analysis.strategies import topological_strategy
 import random
 
 
@@ -22,27 +23,29 @@ def analyze():
 
     # excluding = ["CY4GO", "PE12LE", "JU11SI", "LU24FR"]
 
-    random.seed(0)
-    sample = loader.sample_subject(10)
-    subject_names = [subject.name for subject in sample]
+    # random.seed(0)
+    # sample = loader.sample_subject(10)
+    # subject_names = [subject.name for subject in sample]
 
-    efficiencies = movement_analyzer.calculate_efficiency_for_all_subjects()
-    print(efficiencies)
+    # efficiencies = movement_analyzer.calculate_efficiency_for_all_subjects()
+    # print(efficiencies)
 
-    failures = movement_analyzer.calculate_failure_for_these_subjects(subject_names)
-    print(failures)
+    # failures = movement_analyzer.calculate_failure_for_all_subjects()
+    # print(failures)
 
-    errors = rotation_analyzer.calculate_estimation_error_for_one_subject(subject_names[0])
-    print(errors)
+    # errors = rotation_analyzer.calculate_estimation_error_for_all_subjects()
+    # print(errors)
 
-    # movement_analyzer.plot_for_these_subjects(subject_names, save_only=False, start=3, end=23)
-    movement_analyzer.export_processed_data_for_these_subjects(subject_names)
+    # movement_analyzer.plots_for_all_subjects()
+    # movement_analyzer.export_processed_data_for_all_subjects()
 
-    frechet = movement_analyzer.calculate_frechet_for_these_subjects(subject_names)
-    print(frechet)
+    # frechet = movement_analyzer.calculate_frechet_for_all_subjects(start=3, end=5)
+    # print(frechet)
+
+
 
     # movement_analyzer.export_processed_data_for_all_subjects()
-    # movement_analyzer.export_distance_summary_for_all_subjects()
+    movement_analyzer.plot_all_topological_paths()
 
 
 if __name__ == "__main__":
