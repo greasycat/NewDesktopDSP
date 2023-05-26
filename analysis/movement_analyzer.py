@@ -231,7 +231,7 @@ class MovementAnalyzer:
             os.makedirs(folder)
 
         import csv
-        header1 = ["SubjectName", "TrialNumber", "TrialName", "Time", "X", "Y", "Rotation"]
+        header1 = ["SubjectName", "TrialNumber", "TrialName", "Time", "X_d", "Y_d", "Rotation"]
         header2 = ["SubjectName", "TrialNumber", "TrialName", "Time", "X", "Y", "Rotation"]
         # open or create file in the folder
         with open(folder + "/" + subject_name + ".csv", "w") as f:
@@ -244,7 +244,7 @@ class MovementAnalyzer:
                 _, _, continuous_movements, _, _, _ = self._get_cache(subject_name, i)
                 # create a file in the folder
                 for movement in continuous_movements:
-                    writer.writerow([subject_name, movement["data"].trial_number, movement["data"].trial_name,
+                    writer.writerow([subject_name, movement["data"].trial_number - 2, movement["data"].trial_name,
                                      movement["data"].trial_time, movement["data"].x, movement["data"].y,
                                      movement["data"].rotation])
                     pass
@@ -260,7 +260,7 @@ class MovementAnalyzer:
                 # create a file in the folder
                 for movement in discrete_movements:
                     x, y = movement["pos"]
-                    writer.writerow([subject_name, movement["data"].trial_number, movement["data"].trial_name,
+                    writer.writerow([subject_name, movement["data"].trial_number - 2, movement["data"].trial_name,
                                      movement["data"].trial_time, x, y,
                                      movement["data"].rotation])
                     pass
@@ -341,7 +341,14 @@ class MovementAnalyzer:
         """
         efficiency_dict = {}
         for subject_name in subjects:
-            efficiency_dict[subject_name] = self.calculate_efficiency_for_one_subject(subject_name, start, end)
+            print("wayfinding processing: " + subject_name)
+
+            try:
+                efficiency_dict[subject_name] = self.calculate_efficiency_for_one_subject(subject_name, start, end)
+            except Exception as e:
+                print(
+                    "Warning!! Wayfinding data for this participant is corrupted: " + subject_name + ". Please remove it")
+
         return efficiency_dict
 
     def calculate_efficiency_for_all_subjects(self, start: int = 3, end: int = 23,
@@ -458,9 +465,10 @@ class MovementAnalyzer:
             # combine x and y into a single list of tuples
             # pos in p and q here are 0-indexed
             p = list(zip(x - 0.5, y - 0.5))
-            _, q = self.learning_map.get_shortest_path(source, destination)
-            _, r = self.shortcut_map.get_shortest_path(source, destination)
-            reversed_r = list(reversed(r))
+            _, learning_path = self.learning_map.get_learning_path(source, destination)
+            _, reverse_learning_path = self.learning_map.get_reverse_learning_path(source, destination)
+            _, shortcut = self.shortcut_map.get_shortest_path(source, destination)
+            reversed_shortcut = list(reversed(shortcut))
 
             topo_r = self.strategy.get_path(source, destination)
 
@@ -468,9 +476,10 @@ class MovementAnalyzer:
 
             # calculate Frechet distance
             import similaritymeasures
-            distances[n] = {"learn": similaritymeasures.frechet_dist(p, q),
-                            "shortcut": similaritymeasures.frechet_dist(p, r),
-                            "shortcut_reversed": similaritymeasures.frechet_dist(p, reversed_r),
+            distances[n] = {"learn": similaritymeasures.frechet_dist(p, learning_path),
+                            "learn_reversed": similaritymeasures.frechet_dist(p, reverse_learning_path),
+                            "shortcut": similaritymeasures.frechet_dist(p, shortcut),
+                            "shortcut_reversed": similaritymeasures.frechet_dist(p, reversed_shortcut),
                             "topo": similaritymeasures.frechet_dist(p, topo_r),
                             "failure": failure,
                             "trial": n
@@ -490,7 +499,11 @@ class MovementAnalyzer:
         """
         distances = {}
         for subject in subjects:
-            distances[subject] = self.calculate_frechet_for_one_subject(subject, start, end, use_cache)
+            print("Frechet processing: " + subject)
+            try:
+                distances[subject] = self.calculate_frechet_for_one_subject(subject, start, end, use_cache)
+            except Exception as e:
+                print("Warning!! Wayfinding data for this participant is corrupted: " + subject + ". Please remove it")
         return distances
 
     def calculate_frechet_for_all_subjects(self, start=3, end=23, excluding=None, use_cache=True):
@@ -528,7 +541,8 @@ class MovementAnalyzer:
         :param use_cache: If True, use the cache to load data.
         """
 
-        header = ["SubjectName", "TrialNumber", "TrialName", "FrechetLearn", "FrechetShortcut", "FrechetReversed",
+        header = ["SubjectName", "TrialNumber", "TrialName", "FrechetLearn", "FrechetLearnReversed", "FrechetShortcut",
+                  "FrechetShortcutReversed",
                   "FrechetTopo",
                   "LearnDistance", "ShortcutDistance", "Failure"]
         with open(f"distance_summary.csv", "w", newline="") as f:
@@ -543,8 +557,9 @@ class MovementAnalyzer:
                     source, destination = self.get_source_destination(subject_name, n)
                     learn_distance = self.learning_map.get_shortest_distance(source, destination)
                     shortcut_distance = self.shortcut_map.get_shortest_distance(source, destination)
-                    writer.writerow([subject_name, n, trial_name,
+                    writer.writerow([subject_name, n - 2, trial_name,
                                      distances[n]["learn"],
+                                     distances[n]["learn_reversed"],
                                      distances[n]["shortcut"],
                                      distances[n]["shortcut_reversed"],
                                      distances[n]["topo"],

@@ -3,6 +3,21 @@ import csv
 import heapq
 import numpy as np
 
+learning_order = [
+    "Stove",
+    "Piano",
+    "Trash Can",
+    "Bookshelf",
+    "Wheelbarrow",
+    "Harp",
+    "Well",
+    "Chair",
+    "Mailbox",
+    "Telescope",
+    "Plant",
+    "Picnic Table",
+]
+
 
 def load_objects(file_name):
     objects = {}
@@ -55,14 +70,56 @@ def generate_connectivity_matrix(n):
 
 
 class ShortcutMap:
-    def __init__(self, wall_file, object_file, shortest_distance_file):
+    def __init__(self, wall_file, object_file,
+                 shortcut_output_file="extra/shortcut_paths.csv",
+                 learning_output_file="extra/learning_paths.csv",
+                 reverse_learning_output_file="extra/reverse_learning_paths.csv",
+                 learning=False):
         self.map_width = 11
         self.map_height = 11
         self.connectivity_matrix = generate_connectivity_matrix(11)
         self.load_walls(wall_file)
         self.objects = load_objects(object_file)
         self.shortest_paths = self.calculate_shortest_paths()
-        self.save_shortest_distances(shortest_distance_file)
+        self.learning_paths = None
+        self.reverse_learning_paths = None
+        if learning:
+            self.learning_path = self.calculate_learning_path(learning_order)
+            self.reverse_learning_paths = self.calculate_learning_path(learning_order[::-1])
+            self.save_shortest_distances(learning_output_file, self.learning_path)
+            self.save_shortest_distances(reverse_learning_output_file, self.reverse_learning_paths)
+        else:
+            self.save_shortest_distances(shortcut_output_file, self.shortest_paths)
+
+    def calculate_learning_path(self, order):
+        # get path for consecutive objects and handle the last object to first object case
+        path = dict()
+        for i in range(len(order)):
+            path[order[i]] = dict()
+
+        for i in range(len(order)):
+            for j in range(len(order)):
+                if i != j:
+                    if i < j:
+                        seq = order[i:j + 1]
+                    else:
+                        seq = order[i:] + order[:j + 1]
+
+                    new_path = []
+                    for k in range(len(seq) - 1):
+                        # concatenate the paths
+                        new_path += self.get_shortest_path(seq[k], seq[k + 1])[1]
+                    # remove duplicates in new_path
+                    new_path = list(dict.fromkeys(new_path))
+
+                    path[order[i]][order[j]] = (len(new_path), new_path)
+        return path
+
+    def get_learning_path(self, start_object, end_object):
+        return self.learning_path[start_object][end_object]
+
+    def get_reverse_learning_path(self, start_object, end_object):
+        return self.reverse_learning_paths[start_object][end_object]
 
     def get_shortest_path(self, start_object, end_object):
         try:
@@ -202,10 +259,7 @@ class ShortcutMap:
         # add walls around the map
         # traversability_matrix = np.pad(traversability_matrix, pad_width=1, mode='constant', constant_values=0)
 
-
         return traversability_matrix
-
-
 
     def get_shortest_path_from_two_coords(self, coord1, coord2):
         index1 = self.coord_to_index(coord1)
@@ -214,17 +268,17 @@ class ShortcutMap:
         path = self.reconstruct_path(prev, index2, coord=True)
         return path
 
-    def save_shortest_distances(self, file_name):
+    def save_shortest_distances(self, file_name, paths):
         with open(file_name, "w", newline="") as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(
                 ["Object1", "Object1_X", "Object1_Y", "Object2", "Object2_X", "Object2_Y", "Shortest_Distance", "Path"])
 
-            for start_name in self.shortest_paths.keys():
-                for end_name in self.shortest_paths[start_name].keys():
+            for start_name in paths.keys():
+                for end_name in paths[start_name].keys():
                     start_obj = self.objects[start_name]
                     end_obj = self.objects[end_name]
-                    shortest_distance, path = self.shortest_paths[start_name][end_name]
+                    shortest_distance, path = paths[start_name][end_name]
                     path = "->".join([str(coord) for coord in path])
                     writer.writerow(
                         [start_name, start_obj[0], start_obj[1], end_name, end_obj[0], end_obj[1],
