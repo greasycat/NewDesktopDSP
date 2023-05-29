@@ -15,7 +15,7 @@ def analyze():
     shortcut_map = ShortcutMap("extra/new_walls.csv", "extra/objects.csv", "extra/new_shortcuts.csv")
     learning_map = ShortcutMap("extra/learning_walls.csv", "extra/objects.csv", "extra/learning_shortcuts.csv", learning=True)
 
-    # print(learning_map.get_learning_path("Piano", "Stove"))
+    print(learning_map.get_learning_path("Chair", "Trash Can"))
 
     # Currently the movement analyzer can only handle normal (not alternative) trials, will add that later this week
     movement_analyzer = MovementAnalyzer(loader, shortcut_map=shortcut_map, learning_map=learning_map)
@@ -38,11 +38,15 @@ def analyze():
     # errors = rotation_analyzer.calculate_estimation_error_for_all_subjects()
     # print(errors)
 
+    movement_analyzer.plot_for_these_subjects(["AB04KO",], start=9, end=10)
     # movement_analyzer.plots_for_all_subjects()
     # movement_analyzer.export_processed_data_for_all_subjects()
 
-    frechet = movement_analyzer.calculate_frechet_for_all_subjects(start=3, end=5)
-    print(frechet)
+    # movement_analyzer.calculate_frechet_for_one_subject("AB04KO", start=9, end=10)
+
+    # frechet = movement_analyzer.calculate_frechet_for_all_subjects(start=3, end=5)
+    movement_analyzer.export_distance_summary()
+    # print(frechet)
 
 
 

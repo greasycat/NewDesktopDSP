@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 from typing import Any, Dict, List, Optional, Tuple
+import similaritymeasures
 
 import os
 
@@ -475,7 +476,11 @@ class MovementAnalyzer:
             failure = 1 if n in self.subjects[subject_name].timeout_trials else 0
 
             # calculate Frechet distance
-            import similaritymeasures
+            # print(p)
+            # print(len(learning_path))
+            # print(len(reverse_learning_path))
+            # print(similaritymeasures.frechet_dist(p, learning_path))
+            # print(similaritymeasures.frechet_dist(p, reverse_learning_path))
             distances[n] = {"learn": similaritymeasures.frechet_dist(p, learning_path),
                             "learn_reversed": similaritymeasures.frechet_dist(p, reverse_learning_path),
                             "shortcut": similaritymeasures.frechet_dist(p, shortcut),
@@ -484,6 +489,7 @@ class MovementAnalyzer:
                             "failure": failure,
                             "trial": n
                             }
+            # print(distances)
 
         return distances
         pass
@@ -541,7 +547,10 @@ class MovementAnalyzer:
         :param use_cache: If True, use the cache to load data.
         """
 
-        header = ["SubjectName", "TrialNumber", "TrialName", "FrechetLearn", "FrechetLearnReversed", "FrechetShortcut",
+        header = ["SubjectName", "TrialNumber", "TrialName",
+                  "FrechetLearn",
+                  "FrechetLearnReversed",
+                  "FrechetShortcut",
                   "FrechetShortcutReversed",
                   "FrechetTopo",
                   "LearnDistance", "ShortcutDistance", "Failure"]
@@ -551,11 +560,12 @@ class MovementAnalyzer:
             writer = csv.writer(f)
             writer.writerow(header)
             for subject_name in self.subjects.keys():
+                print("Exporting: " + subject_name)
                 distances = self.calculate_frechet_for_one_subject(subject_name, start, end, use_cache)
                 for n in range(start, end):
                     trial_name = self.subjects[subject_name].movement_sequence[n][0].trial_name
                     source, destination = self.get_source_destination(subject_name, n)
-                    learn_distance = self.learning_map.get_shortest_distance(source, destination)
+                    learn_distance, _ = self.learning_map.get_learning_path(source, destination)
                     shortcut_distance = self.shortcut_map.get_shortest_distance(source, destination)
                     writer.writerow([subject_name, n - 2, trial_name,
                                      distances[n]["learn"],
