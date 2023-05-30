@@ -1,4 +1,6 @@
 /path_plot/
+/path_plot_1/
+/path_plot_2/
 /alldata/
 /.idea/
 /output/
@@ -7,5 +9,10 @@
 /test/
 /distance/
 /processed_data/
+/processed_data_1/
+/processed_data_2/
 /data/
+/data_alt/
 /topo_plot/
+/topo_plot_1/
+/topo_plot_2/

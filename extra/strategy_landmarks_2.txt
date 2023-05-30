@@ -1,0 +1,12 @@
+TV,3,3
+Desk,2,9
+Water cooler,4,11
+Clock,5,5
+Streetlamp,5,9
+Swing,6,3
+Stepladder,7,7
+Phonebooth,8,2
+Fridge,8,9
+Bicycle,10,10
+Couch,12,3
+Statue,12,8

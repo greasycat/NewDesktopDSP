@@ -2,21 +2,9 @@ from __future__ import annotations
 import csv
 import heapq
 import numpy as np
+from matplotlib import pyplot as plt
 
-learning_order = [
-    "Stove",
-    "Piano",
-    "Trash Can",
-    "Bookshelf",
-    "Wheelbarrow",
-    "Harp",
-    "Well",
-    "Chair",
-    "Mailbox",
-    "Telescope",
-    "Plant",
-    "Picnic Table",
-]
+from analysis.constants import Constants
 
 
 def load_objects(file_name):
@@ -70,19 +58,24 @@ def generate_connectivity_matrix(n):
 
 
 class ShortcutMap:
-    def __init__(self, wall_file, object_file,
-                 shortcut_output_file="extra/shortcut_paths.csv",
-                 learning_output_file="extra/learning_paths.csv",
-                 reverse_learning_output_file="extra/reverse_learning_paths.csv",
+    def __init__(self,
+                 constants: Constants,
+                 wall_file,
+                 object_file,
+                 shortcut_output_file="shortcut_paths.csv",
+                 learning_output_file="learning_paths.csv",
+                 reverse_learning_output_file="reverse_learning_paths.csv",
                  learning=False):
         self.map_width = 11
         self.map_height = 11
         self.connectivity_matrix = generate_connectivity_matrix(11)
+        self.walls = []
         self.load_walls(wall_file)
         self.objects = load_objects(object_file)
         self.shortest_paths = self.calculate_shortest_paths()
         self.learning_paths = None
         self.reverse_learning_paths = None
+        learning_order = constants.learning_order
         if learning:
             self.learning_path = self.calculate_learning_path(learning_order)
             self.reverse_learning_paths = self.calculate_learning_path(learning_order[::-1])
@@ -135,6 +128,27 @@ class ShortcutMap:
     def get_shortest_distance(self, start_object, end_object):
         return self.get_shortest_path(start_object, end_object)[0]
 
+    def test_plot(self):
+        grid_size = 11
+        grid = [[0] * grid_size for _ in range(grid_size)]
+
+        # Color the grid cells based on the wall positions
+        for wall in self.walls:
+            x, y = wall
+            grid[y][x] = 1
+
+        # Plot the grid
+        plt.imshow(grid, cmap='binary')
+
+        # Customize the plot
+        plt.xticks(range(grid_size))
+        plt.yticks(range(grid_size))
+        plt.grid(True, color='black', linewidth=1)
+        plt.gca().invert_yaxis()
+
+        # Show the plot
+        plt.show()
+
     def load_walls(self, file_name):
         with open(file_name, "r") as csvfile:
             reader = csv.reader(csvfile)
@@ -142,7 +156,7 @@ class ShortcutMap:
             for row in reader:
                 x, y = int(row[0]), int(row[1])
                 current_index = self.coord_to_index((x, y))
-                t = self.index_to_coord(current_index)
+                self.walls.append((x, y))
                 # print("X: {}, Y: {}, Index: {}, t: {}".format(x, y, current_index, t))
                 # set current block and neighboring blocks to 0
                 self.connectivity_matrix[current_index][current_index] = 0
@@ -268,7 +282,40 @@ class ShortcutMap:
         path = self.reconstruct_path(prev, index2, coord=True)
         return path
 
+    def save_survey_map(self, survey_map_output_file="survey_map.txt", landmarks_output_file="landmarks_on_survey_map.txt"):
+        x_points = [0] * 12
+        y_points = [0] * 12
+        tile_map = [[100 for _ in range(len(x_points) - 1)] for _ in range(len(y_points) - 1)]
+        for col in range(len(x_points) - 1):
+            for row in range(len(y_points) - 1):
+                if not self.check_coord_is_wall((col, row)):
+                    # get the center point of the tile
+                    w = abs(x_points[col] - x_points[col + 1])
+                    h = abs(y_points[row] - y_points[row + 1])
+                    area = w * h
+                    tile_map[row][col] = 1
+
+        resized_map = [[120] * (len(x_points) + 1) for _ in range(len(y_points) + 1)]
+        for i in range(len(x_points) - 1):
+            for j in range(len(y_points) - 1):
+                resized_map[i + 1][j + 1] = tile_map[i][j]
+
+        # convert resize_map to numpy array
+        resized_map = np.array(resized_map)
+
+        with open(survey_map_output_file, "w", newline="") as csvfile:
+            for i in range(len(x_points) + 1):
+                for j in range(len(y_points) + 1):
+                    csvfile.write(f"{i + 1}\t{j + 1}\t{resized_map[i][j]}\n")
+
+        with open(landmarks_output_file, "w", newline="") as csvfile:
+            for obj in self.objects:
+                pos = self.objects[obj]
+                csvfile.write(f"{obj},{pos[1] + 2},{pos[0] + 2}\n")
+            pass
+
     def save_shortest_distances(self, file_name, paths):
+        print("Saving shortest distances to {}".format(file_name))
         with open(file_name, "w", newline="") as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(

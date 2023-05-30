@@ -1,5 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
+
+from analysis.constants import Constants
 from analysis.subject import Subject
 from analysis.movement_data import MovementData
 from analysis.rotation_data import RotationData
@@ -23,7 +25,8 @@ class InsufficientDataError(Exception):
 
 
 class Loader:
-    def __init__(self, data_dir: str = 'data', extra_dir: str = "extra", image_dir: str = "images"):
+    def __init__(self, constants: Constants, data_dir: str = 'data', extra_dir: str = "extra",
+                 image_dir: str = "images", ):
         """
         Loader class for loading subjects, movements, and rotations data.
 
@@ -38,6 +41,7 @@ class Loader:
         self.shortcuts = None
         self.trial_configuration = None
         self.image_maze1 = None
+        self.constants = constants
 
     def get_subjects(self, subjects: List[str]) -> List[Subject]:
         """
@@ -48,7 +52,7 @@ class Loader:
         """
         return [self.subjects[subject] for subject in subjects]
 
-    def load(self, force: bool = False, learning: bool = False, image_file: str = "maze1.png"):
+    def load(self, force: bool = False, learning: bool = False):
         """
         Load subjects, movements, and rotations data.
 
@@ -61,9 +65,10 @@ class Loader:
             return
 
         # Load Trial Configuration
-        self.trial_configuration = TrialConfiguration(yield_csv_todict(self.extra_dir.joinpath("trial_1.csv")))
+        self.trial_configuration = TrialConfiguration(
+            yield_csv_todict(self.extra_dir.joinpath(self.constants.trial_file)))
 
-        self.image_maze1 = self.image_dir.joinpath(image_file)
+        self.image_maze1 = self.image_dir.joinpath(self.constants.maze_image)
 
         # Get participants dirs
         for participant_dir in self.root_dir.iterdir():
@@ -78,20 +83,48 @@ class Loader:
                     continue
                 file_paths[sub_file.name] = sub_file
 
-            if len(file_paths.items()) != 4 and force:
+            if len(file_paths.items()) != 4 and not force:
                 raise InsufficientDataError("Corrupted file")
 
             subject = Subject(name=participant_dir.name)
             try:
                 subject.meta = load_meta(file_paths[META_FILE])
+            except KeyError:
+                if not force:
+                    raise CorruptedDataError(
+                        "Make sure you have the correct filename for the meta file, otherwise exclude the folder" + str(
+                            participant_dir))
+
+                print("Cannot load meta file, skipping")
+            try:
                 subject.rotation_sequence = load_rotation(file_paths[ROTATION_FILE])
+            except KeyError:
+                if not force:
+                    raise CorruptedDataError(
+                        "Make sure you have the correct filename for the rotation file, otherwise exclude the folder" + str(
+                            participant_dir))
+                else:
+                    print("Cannot load rotation file, skipping")
+
+            try:
                 subject.movement_sequence = load_movement(file_paths[MOVEMENT_FILE], learning=learning)
+            except KeyError:
+                if not force:
+                    raise CorruptedDataError(
+                        "Make sure you have the correct filename for the movement file, otherwise exclude the folder" + str(
+                            participant_dir))
+
+                print("Cannot load movement file, skipping")
+
+            try:
                 subject.timeout_trials = load_timeout(file_paths[TIMEOUT_FILE])
             except KeyError:
                 if not force:
                     raise CorruptedDataError(
-                        "Makesure you have all the filenames correct, otherwise exclude the folder" + str(
+                        "Make sure you have the correct filename for the timeout file, otherwise exclude the folder" + str(
                             participant_dir))
+
+                print("Cannot load timeout file, skipping")
 
             self.subjects[participant_dir.name] = subject
 
@@ -159,10 +192,16 @@ def load_movement(path, learning=False):
 def load_timeout(path):
     timeout_trials = []
     with open(path, newline='', encoding="utf-8-sig") as csvfile:
-        dict_reader = csv.DictReader(csvfile, delimiter=',', skipinitialspace=True)
-        for row in dict_reader:
-            timeout_trials.append(int(row["Trial"]))
-    # print(timeout_trials)
+        # try int parse the first line, if it fails, it is a header, otherwise, it is not a header
+        try:
+            int(csvfile.readline())
+            csvfile.seek(0)
+        except ValueError:
+            pass
+        reader = csv.reader(csvfile, delimiter=',', skipinitialspace=True)
+        for row in reader:
+            timeout_trials.append(int(row[0]))
+
     return timeout_trials
 
 

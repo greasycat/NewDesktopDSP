@@ -1,0 +1,21 @@
+TrialName,Source,Destination,TrueAngle
+dsp2_02,Bicycle,Clock,230
+dsp2_03,Statue,Desk,276
+dsp2_04,Statue,Water cooler,295.5
+dsp2_05,Couch,Streetlamp,313
+dsp2_06,Couch,Fridge,320
+dsp2_07,Phonebooth,Water cooler,338
+dsp2_08,Phonebooth,Stepladder,348
+dsp2_09,Swing,Bicycle,27.5
+dsp2_10,Swing,Desk,331
+dsp2_11,Clock,Stepladder,60
+dsp2_13,TV,Statue,59
+dsp2_14,TV,Streetlamp,25
+dsp2_16,Desk,Fridge,90
+dsp2_17,Water cooler,Clock,167
+dsp2_18,Water cooler,Bicycle,92.5
+dsp2_19,Streetlamp,Swing,176.5
+dsp2_21,Stepladder,Couch,132
+dsp2_22,Stepladder,TV,219
+dsp2_23,Fridge,Swing,203
+dsp2_24,Fridge,Phonebooth,180

@@ -8,6 +8,7 @@ from analysis.subject import Subject
 from analysis.grid import Grid
 from analysis.shortcut_map import ShortcutMap
 from analysis.utility import list_sub_one, list_add_one, tuple_sub_one, tuple_add_one, tuple_add
+from analysis.constants import Constants
 
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -25,15 +26,18 @@ import os
 # for key, value in subjects.movement_sequence.items():
 
 
+# 0.5 -1.1
+
 class MovementAnalyzer:
     def __init__(self,
                  loader: Loader,
                  shortcut_map: ShortcutMap,
                  learning_map: ShortcutMap,
-                 origin=np.array([3, 0]),
+                 strategy: Strategy,
                  map_actual_size=np.array([225, 225]),
                  grid_size=np.array([11, 11])):
-        self.grid = Grid(origin=origin, map_actual_size=map_actual_size, grid_size=grid_size)
+        self.constants = loader.constants
+        self.grid = Grid(origin=self.constants.origin, map_actual_size=map_actual_size, grid_size=grid_size)
         self.shortcut_map = shortcut_map
         self.learning_map = learning_map
         self.trial_configuration = loader.trial_configuration
@@ -41,7 +45,7 @@ class MovementAnalyzer:
         self.bg_1 = loader.image_maze1
         self.subjects = loader.subjects
         self.cache: Dict[str, Any] = {}
-        self.strategy = Strategy("extra/dsp_coords.txt", "extra/LmOnPath.txt")
+        self.strategy = strategy
 
     def get_source_destination(self, subject_name, trial_number):
         movements = self.subjects[subject_name].movement_sequence[trial_number]
@@ -63,7 +67,10 @@ class MovementAnalyzer:
         self.current_subject = subject
 
         movements = subject.movement_sequence[trial_number]
-        trial_name = movements[0].trial_name
+        try:
+            trial_name = movements[0].trial_name
+        except IndexError:
+            return None
 
         source, destination = self.trial_configuration.get_source_destination_pair_by_name(trial_name)
         _, shortcut = self.shortcut_map.get_shortest_path(source, destination)
@@ -154,6 +161,7 @@ class MovementAnalyzer:
 
     def _draw(self, ax, fig, subject: str, n: int, ox: List[float], oy: List[float], x: List[float], y: List[float],
               bg_file: str = "",
+              folder: str = "path_plot",
               save_only: bool = False) -> None:
         """
         Draws a path plot for a given subject, trial, and path.
@@ -191,8 +199,8 @@ class MovementAnalyzer:
 
         trial_name = self.subjects[subject].movement_sequence[n][0].trial_name
         source, destination = self.trial_configuration.get_source_destination_pair_by_name(trial_name)
-        shortest = self.shortcut_map.get_shortest_path(source, destination)[0]-1
-        estimated_distance = len(x)-1
+        shortest = self.shortcut_map.get_shortest_path(source, destination)[0] - 1
+        estimated_distance = len(x) - 1
         efficiency = self._calculate_efficiency(self.subjects[subject], n, estimated_distance)
         timeout = "Failure (Timeout)" if (n in self.subjects[subject].timeout_trials) else "Success"
         plt.title(
@@ -209,9 +217,9 @@ class MovementAnalyzer:
         plt.grid()
 
         # create folder if not exist
-        if not os.path.exists('path_plot/' + subject):
-            os.makedirs('path_plot/' + subject)
-        plt.savefig('path_plot/' + subject + '/' + trial_name + '_Trial' + str(n - 2) + '.png', dpi=80)
+        if not os.path.exists(f'{folder}/' + subject):
+            os.makedirs(f'{folder}/' + subject)
+        plt.savefig(f'{folder}/' + subject + '/' + trial_name + '_Trial' + str(n - 2) + '.png', dpi=80)
 
         if not save_only:
             plt.show()
@@ -241,13 +249,17 @@ class MovementAnalyzer:
             writer.writerow(header1)
 
             for i in range(start, end):
-                _, _, continuous_movements, _, _, _ = self._get_cache(subject_name, i)
-                # create a file in the folder
-                for movement in continuous_movements:
-                    writer.writerow([subject_name, movement["data"].trial_number-2, movement["data"].trial_name,
-                                     movement["data"].trial_time, movement["data"].x, movement["data"].y,
-                                     movement["data"].rotation])
-                    pass
+                try:
+                    _, _, continuous_movements, _, _, _ = self._get_cache(subject_name, i)
+                    # create a file in the folder
+                    for movement in continuous_movements:
+                        writer.writerow([subject_name, movement["data"].trial_number - 2, movement["data"].trial_name,
+                                         movement["data"].trial_time, movement["data"].x, movement["data"].y,
+                                         movement["data"].rotation])
+                        pass
+                except TypeError:
+                    print(f"Error in {subject_name}, {i}, skipping...")
+                    continue
 
         with open(folder + "/" + subject_name + "_discrete.csv", "w") as f:
             # create csv writer
@@ -256,14 +268,18 @@ class MovementAnalyzer:
             writer.writerow(header2)
 
             for i in range(start, end):
-                _, _, _, _, _, discrete_movements = self._get_cache(subject_name, i)
-                # create a file in the folder
-                for movement in discrete_movements:
-                    x, y = movement["pos"]
-                    writer.writerow([subject_name, movement["data"].trial_number-2, movement["data"].trial_name,
-                                     movement["data"].trial_time, x, y,
-                                     movement["data"].rotation])
-                    pass
+                try:
+                    _, _, _, _, _, discrete_movements = self._get_cache(subject_name, i)
+                    # create a file in the folder
+                    for movement in discrete_movements:
+                        x, y = movement["pos"]
+                        writer.writerow([subject_name, movement["data"].trial_number - 2, movement["data"].trial_name,
+                                         movement["data"].trial_time, x, y,
+                                         movement["data"].rotation])
+                        pass
+                except TypeError:
+                    print(f"Error in {subject_name}, {i}, skipping...")
+                    continue
 
     def export_processed_data_for_these_subjects(self, subject_names, start=3, end=23, folder="processed_data"):
         for subject_name in subject_names:
@@ -302,7 +318,7 @@ class MovementAnalyzer:
             return 2.55
         else:
             source, destination = self.trial_configuration.get_source_destination_pair_by_name(trial_name)
-            shortest = self.shortcut_map.get_shortest_path(source, destination)[0]-1
+            shortest = self.shortcut_map.get_shortest_path(source, destination)[0] - 1
             efficiency = estimated_distance / shortest
             return max(efficiency, 1)
 
@@ -320,11 +336,15 @@ class MovementAnalyzer:
         """
         efficiency_dict = {}
         for n in range(start, end):
-            x = []
-            if use_cache:
-                _, _, _, x, _, _ = self._get_cache(subject_name, n)
-            else:
-                _, _, _, x, _, _ = self._load_xy(subject_name, n)
+            try:
+                x = []
+                if use_cache:
+                    _, _, _, x, _, _ = self._get_cache(subject_name, n)
+                else:
+                    _, _, _, x, _, _ = self._load_xy(subject_name, n)
+            except TypeError:
+                print(f"Error in {subject_name}, {n}, skipping...")
+                continue
             efficiency_dict[n] = self._calculate_efficiency(self.subjects[subject_name], n, len(x) - 1)
         return efficiency_dict
 
@@ -341,14 +361,14 @@ class MovementAnalyzer:
         """
         efficiency_dict = {}
         for subject_name in subjects:
-            print("wayfinding processing: "+subject_name)
-            
+            print("wayfinding processing: " + subject_name)
+
             try:
                 efficiency_dict[subject_name] = self.calculate_efficiency_for_one_subject(subject_name, start, end)
-            except Exception as e: 
+            except Exception as e:
                 print(
                     "Warning!! Wayfinding data for this participant is corrupted: " + subject_name + ". Please remove it")
-            
+
         return efficiency_dict
 
     def calculate_efficiency_for_all_subjects(self, start: int = 3, end: int = 23,
@@ -400,7 +420,7 @@ class MovementAnalyzer:
         subjects = [subject for subject in self.subjects if subject not in excluding]
         return self.calculate_failure_for_these_subjects(subjects)
 
-    def plot_for_these_subjects(self, subjects: List[str], start: int = 3, end: int = 23, save_only: bool = False,
+    def plot_for_these_subjects(self, subjects: List[str], start: int = 3, end: int = 23, folder="path_plot", save_only: bool = False,
                                 use_cache=True):
         """
         Plot movement paths for a list of subjects between the given trial range.
@@ -408,6 +428,7 @@ class MovementAnalyzer:
         :param subjects: A list of subject names.
         :param start: The starting trial number (inclusive).
         :param end: The ending trial number (exclusive).
+        :param folder: The folder to save the plots.
         :param save_only: If True, the plot will only be saved and not displayed.
         :param use_cache: If True, use the cache to load data.
         """
@@ -415,13 +436,17 @@ class MovementAnalyzer:
 
         for subject in subjects:
             for n in range(start, end):
-                if use_cache:
-                    ox, oy, _, x, y, _ = self._get_cache(subject, n)
-                else:
-                    ox, oy, _, x, y, _ = self._load_xy(subject, n)
-                self._draw(ax=ax, fig=fig, subject=subject, n=n, ox=ox, oy=oy, x=x, y=y, save_only=save_only)
+                try:
+                    if use_cache:
+                        ox, oy, _, x, y, _ = self._get_cache(subject, n)
+                    else:
+                        ox, oy, _, x, y, _ = self._load_xy(subject, n)
+                    self._draw(ax=ax, fig=fig, subject=subject, n=n, ox=ox, oy=oy, x=x, y=y, folder=folder, save_only=save_only)
+                except TypeError:
+                    print("TypeError: " + subject + " " + str(n))
+                    continue
 
-    def plots_for_all_subjects(self, start=3, end=23, excluding=None, save_only=False):
+    def plots_for_all_subjects(self, start=3, end=23, excluding=None, folder="path_plot", save_only=False):
         """
         Saves plots for all subjects in the dataset.
 
@@ -429,6 +454,7 @@ class MovementAnalyzer:
             start (int): The index of the first trial to be plotted (inclusive).
             end (int): The index of the last trial to be plotted (exclusive).
             excluding (list): A list of subject names to be excluded from the plots.
+            folder (str): The folder to save the plots.
             save_only (bool): If True, save the plots without showing them.
 
         Returns:
@@ -439,7 +465,7 @@ class MovementAnalyzer:
 
         subjects = [subject for subject in self.subjects if subject not in excluding]
 
-        self.plot_for_these_subjects(subjects, start, end, save_only)
+        self.plot_for_these_subjects(subjects, start, end, folder, save_only)
 
     def calculate_frechet_for_one_subject(self, subject_name, start=3, end=23, use_cache=True):
         """
@@ -454,10 +480,14 @@ class MovementAnalyzer:
         distances = {}
 
         for n in range(start, end):
-            if use_cache:
-                _, _, _, x, y, _ = self._get_cache(subject_name, n)
-            else:
-                _, _, _, x, y, _ = self._load_xy(subject_name, n)
+            try:
+                if use_cache:
+                    _, _, _, x, y, _ = self._get_cache(subject_name, n)
+                else:
+                    _, _, _, x, y, _ = self._load_xy(subject_name, n)
+            except TypeError:
+                print("TypeError: " + subject_name + " " + str(n))
+                continue
 
             # get name of the start and end points
             source, destination = self.get_source_destination(subject_name, n)
@@ -497,11 +527,8 @@ class MovementAnalyzer:
         """
         distances = {}
         for subject in subjects:
-            print("Frechet processing: "+subject)
-            try:
-                distances[subject] = self.calculate_frechet_for_one_subject(subject, start, end, use_cache)
-            except Exception as e: 
-                print("Warning!! Wayfinding data for this participant is corrupted: " + subject + ". Please remove it")
+            print("Frechet processing: " + subject)
+            distances[subject] = self.calculate_frechet_for_one_subject(subject, start, end, use_cache)
         return distances
 
     def calculate_frechet_for_all_subjects(self, start=3, end=23, excluding=None, use_cache=True):
@@ -530,36 +557,42 @@ class MovementAnalyzer:
 
         self.strategy.get_all_topological_plots(folder=folder, save_only=save_only)
 
-    def export_distance_summary(self, start=3, end=23, use_cache=True):
+    def export_distance_summary(self, summary_output_file="distance_summary.csv", start=3, end=23, use_cache=True):
         """
         Export the distance summary for one subject between the given trial range.
 
+        :param summary_output_file: The output file name.
         :param start: The starting trial number (inclusive).
         :param end: The ending trial number (exclusive).
         :param use_cache: If True, use the cache to load data.
         """
 
-        header = ["SubjectName", "TrialNumber", "TrialName", "FrechetLearn", "FrechetLearnReversed", "FrechetShortcut", 
+        header = ["SubjectName", "TrialNumber", "TrialName", "FrechetLearn", "FrechetLearnReversed", "FrechetShortcut",
                   "FrechetTopo",
                   "LearnDistance", "ShortcutDistance", "Failure"]
-        with open(f"distance_summary.csv", "w", newline="") as f:
+        with open(summary_output_file, "w", newline="") as f:
             # csv writer
             import csv
             writer = csv.writer(f)
             writer.writerow(header)
             for subject_name in self.subjects.keys():
                 distances = self.calculate_frechet_for_one_subject(subject_name, start, end, use_cache)
+
                 for n in range(start, end):
-                    trial_name = self.subjects[subject_name].movement_sequence[n][0].trial_name
-                    source, destination = self.get_source_destination(subject_name, n)
-                    learn_distance,_ = self.learning_map.get_learning_path(source, destination)
-                    shortcut_distance = self.shortcut_map.get_shortest_distance(source, destination)
-                    writer.writerow([subject_name, n-2, trial_name,
-                                     distances[n]["learn"],
-                                     distances[n]["learn_reversed"],
-                                     distances[n]["shortcut"],
-                                     distances[n]["topo"],
-                                     learn_distance-1,
-                                     shortcut_distance-1,
-                                     distances[n]["failure"],
-                                     ])
+                    try:
+                        trial_name = self.subjects[subject_name].movement_sequence[n][0].trial_name
+                        source, destination = self.get_source_destination(subject_name, n)
+                        learn_distance, _ = self.learning_map.get_learning_path(source, destination)
+                        shortcut_distance = self.shortcut_map.get_shortest_distance(source, destination)
+                        writer.writerow([subject_name, n - 2, trial_name,
+                                         distances[n]["learn"],
+                                         distances[n]["learn_reversed"],
+                                         distances[n]["shortcut"],
+                                         distances[n]["topo"],
+                                         learn_distance - 1,
+                                         shortcut_distance - 1,
+                                         distances[n]["failure"],
+                                         ])
+                    except IndexError:
+                        print("IndexError: " + subject_name + " " + str(n) + ", skipping...")
+                        continue
