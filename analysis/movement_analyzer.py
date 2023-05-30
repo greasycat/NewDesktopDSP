@@ -13,7 +13,6 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 from typing import Any, Dict, List, Optional, Tuple
-import similaritymeasures
 
 import os
 
@@ -192,8 +191,8 @@ class MovementAnalyzer:
 
         trial_name = self.subjects[subject].movement_sequence[n][0].trial_name
         source, destination = self.trial_configuration.get_source_destination_pair_by_name(trial_name)
-        shortest = self.shortcut_map.get_shortest_path(source, destination)[0]
-        estimated_distance = len(x)
+        shortest = self.shortcut_map.get_shortest_path(source, destination)[0]-1
+        estimated_distance = len(x)-1
         efficiency = self._calculate_efficiency(self.subjects[subject], n, estimated_distance)
         timeout = "Failure (Timeout)" if (n in self.subjects[subject].timeout_trials) else "Success"
         plt.title(
@@ -245,7 +244,7 @@ class MovementAnalyzer:
                 _, _, continuous_movements, _, _, _ = self._get_cache(subject_name, i)
                 # create a file in the folder
                 for movement in continuous_movements:
-                    writer.writerow([subject_name, movement["data"].trial_number - 2, movement["data"].trial_name,
+                    writer.writerow([subject_name, movement["data"].trial_number-2, movement["data"].trial_name,
                                      movement["data"].trial_time, movement["data"].x, movement["data"].y,
                                      movement["data"].rotation])
                     pass
@@ -261,7 +260,7 @@ class MovementAnalyzer:
                 # create a file in the folder
                 for movement in discrete_movements:
                     x, y = movement["pos"]
-                    writer.writerow([subject_name, movement["data"].trial_number - 2, movement["data"].trial_name,
+                    writer.writerow([subject_name, movement["data"].trial_number-2, movement["data"].trial_name,
                                      movement["data"].trial_time, x, y,
                                      movement["data"].rotation])
                     pass
@@ -300,10 +299,10 @@ class MovementAnalyzer:
         """
         trial_name = subject.movement_sequence[n][0].trial_name
         if n in subject.timeout_trials:
-            return 2.54
+            return 2.55
         else:
             source, destination = self.trial_configuration.get_source_destination_pair_by_name(trial_name)
-            shortest = self.shortcut_map.get_shortest_path(source, destination)[0]
+            shortest = self.shortcut_map.get_shortest_path(source, destination)[0]-1
             efficiency = estimated_distance / shortest
             return max(efficiency, 1)
 
@@ -342,14 +341,14 @@ class MovementAnalyzer:
         """
         efficiency_dict = {}
         for subject_name in subjects:
-            print("wayfinding processing: " + subject_name)
-
+            print("wayfinding processing: "+subject_name)
+            
             try:
                 efficiency_dict[subject_name] = self.calculate_efficiency_for_one_subject(subject_name, start, end)
-            except Exception as e:
+            except Exception as e: 
                 print(
                     "Warning!! Wayfinding data for this participant is corrupted: " + subject_name + ". Please remove it")
-
+            
         return efficiency_dict
 
     def calculate_efficiency_for_all_subjects(self, start: int = 3, end: int = 23,
@@ -469,27 +468,20 @@ class MovementAnalyzer:
             _, learning_path = self.learning_map.get_learning_path(source, destination)
             _, reverse_learning_path = self.learning_map.get_reverse_learning_path(source, destination)
             _, shortcut = self.shortcut_map.get_shortest_path(source, destination)
-            reversed_shortcut = list(reversed(shortcut))
 
             topo_r = self.strategy.get_path(source, destination)
 
             failure = 1 if n in self.subjects[subject_name].timeout_trials else 0
 
             # calculate Frechet distance
-            # print(p)
-            # print(len(learning_path))
-            # print(len(reverse_learning_path))
-            # print(similaritymeasures.frechet_dist(p, learning_path))
-            # print(similaritymeasures.frechet_dist(p, reverse_learning_path))
+            import similaritymeasures
             distances[n] = {"learn": similaritymeasures.frechet_dist(p, learning_path),
                             "learn_reversed": similaritymeasures.frechet_dist(p, reverse_learning_path),
                             "shortcut": similaritymeasures.frechet_dist(p, shortcut),
-                            "shortcut_reversed": similaritymeasures.frechet_dist(p, reversed_shortcut),
                             "topo": similaritymeasures.frechet_dist(p, topo_r),
                             "failure": failure,
                             "trial": n
                             }
-            # print(distances)
 
         return distances
         pass
@@ -505,10 +497,10 @@ class MovementAnalyzer:
         """
         distances = {}
         for subject in subjects:
-            print("Frechet processing: " + subject)
+            print("Frechet processing: "+subject)
             try:
                 distances[subject] = self.calculate_frechet_for_one_subject(subject, start, end, use_cache)
-            except Exception as e:
+            except Exception as e: 
                 print("Warning!! Wayfinding data for this participant is corrupted: " + subject + ". Please remove it")
         return distances
 
@@ -547,11 +539,7 @@ class MovementAnalyzer:
         :param use_cache: If True, use the cache to load data.
         """
 
-        header = ["SubjectName", "TrialNumber", "TrialName",
-                  "FrechetLearn",
-                  "FrechetLearnReversed",
-                  "FrechetShortcut",
-                  "FrechetShortcutReversed",
+        header = ["SubjectName", "TrialNumber", "TrialName", "FrechetLearn", "FrechetLearnReversed", "FrechetShortcut", 
                   "FrechetTopo",
                   "LearnDistance", "ShortcutDistance", "Failure"]
         with open(f"distance_summary.csv", "w", newline="") as f:
@@ -560,20 +548,18 @@ class MovementAnalyzer:
             writer = csv.writer(f)
             writer.writerow(header)
             for subject_name in self.subjects.keys():
-                print("Exporting: " + subject_name)
                 distances = self.calculate_frechet_for_one_subject(subject_name, start, end, use_cache)
                 for n in range(start, end):
                     trial_name = self.subjects[subject_name].movement_sequence[n][0].trial_name
                     source, destination = self.get_source_destination(subject_name, n)
-                    learn_distance, _ = self.learning_map.get_learning_path(source, destination)
+                    learn_distance,_ = self.learning_map.get_learning_path(source, destination)
                     shortcut_distance = self.shortcut_map.get_shortest_distance(source, destination)
-                    writer.writerow([subject_name, n - 2, trial_name,
+                    writer.writerow([subject_name, n-2, trial_name,
                                      distances[n]["learn"],
                                      distances[n]["learn_reversed"],
                                      distances[n]["shortcut"],
-                                     distances[n]["shortcut_reversed"],
                                      distances[n]["topo"],
-                                     learn_distance,
-                                     shortcut_distance,
+                                     learn_distance-1,
+                                     shortcut_distance-1,
                                      distances[n]["failure"],
                                      ])
