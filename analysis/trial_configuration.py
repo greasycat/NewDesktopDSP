@@ -43,3 +43,13 @@ class TrialConfiguration:
         :rtype: float
         """
         return float(self.configuration[name]["TrueAngle"])
+
+    def get_initial_rotation(self, name: str) -> float:
+        """
+        Get the initial rotation angle relative to the maze direction (0 points to north).
+
+        :param name: The name of the trial.
+        :return: The initial rotation angle.
+        """
+
+        return float(self.configuration[name]["Rotation"])

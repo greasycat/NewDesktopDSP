@@ -1,21 +1,21 @@
-TrialName,Source,Destination,TrueAngle
-dsp2_02,Bicycle,Clock,230
-dsp2_03,Statue,Desk,276
-dsp2_04,Statue,Water cooler,295.5
-dsp2_05,Couch,Streetlamp,313
-dsp2_06,Couch,Fridge,320
-dsp2_07,Phonebooth,Water cooler,338
-dsp2_08,Phonebooth,Stepladder,348
-dsp2_09,Swing,Bicycle,27.5
-dsp2_10,Swing,Desk,331
-dsp2_11,Clock,Stepladder,60
-dsp2_13,TV,Statue,59
-dsp2_14,TV,Streetlamp,25
-dsp2_16,Desk,Fridge,90
-dsp2_17,Water cooler,Clock,167
-dsp2_18,Water cooler,Bicycle,92.5
-dsp2_19,Streetlamp,Swing,176.5
-dsp2_21,Stepladder,Couch,132
-dsp2_22,Stepladder,TV,219
-dsp2_23,Fridge,Swing,203
-dsp2_24,Fridge,Phonebooth,180
+TrialName,Source,Destination,TrueAngle,Rotation
+dsp2_02,Bicycle,Clock,219.4791,90
+dsp2_03,Statue,Desk,173.6352,180
+dsp2_04,Statue,Water cooler,154.4971,180
+dsp2_05,Couch,Streetlamp,135.7993,180
+dsp2_06,Couch,Fridge,127.2886,180
+dsp2_07,Phonebooth,Water cooler,111.2427,90
+dsp2_08,Phonebooth,Stepladder,101.7599,90
+dsp2_09,Swing,Bicycle,65.53892,180
+dsp2_10,Swing,Desk,117.8022,180
+dsp2_11,Clock,Stepladder,35.07079,90
+dsp2_13,TV,Statue,31.12397,270
+dsp2_14,TV,Streetlamp,65.5894,270
+dsp2_16,Desk,Fridge,2.36786,0
+dsp2_17,Water cooler,Clock,281.0111,90
+dsp2_18,Water cooler,Bicycle,9.846924,90
+dsp2_19,Streetlamp,Swing,273.8595,0
+dsp2_21,Stepladder,Couch,317.5734,270
+dsp2_22,Stepladder,TV,229.6743,270
+dsp2_23,Fridge,Swing,245.6467,180
+dsp2_24,Fridge,Phonebooth,270.2195,180

@@ -33,11 +33,14 @@ def analyze():
     strategy_2 = Strategy("extra/strategy_map_2.txt", "extra/strategy_landmarks_2.txt")
 
     # Currently the movement analyzer can only handle normal (not alternative) trials, will add that later this week
-    movement_analyzer_2 = MovementAnalyzer(loader_2, shortcut_map=shortcut_map_2, learning_map=learning_map_2,
-                                           strategy=strategy_2)
+    # movement_analyzer_2 = MovementAnalyzer(loader_2, shortcut_map=shortcut_map_2, learning_map=learning_map_2,
+    #                                        strategy=strategy_2)
 
     # rotation analyzer gives the absolute angular error for each trial (both normal and alternative)
-    # rotation_analyzer = RotationAnalyzer(loader)
+    rotation_analyzer = RotationAnalyzer(loader_2)
+    # rotation_analyzer.plot_estimation_error_for_one_subject("E")
+    print(rotation_analyzer.calculate_estimation_error_for_all_subjects())
+
 
     # excluding = ["CY4GO", "PE12LE", "JU11SI", "LU24FR"]
 
@@ -56,8 +59,8 @@ def analyze():
 
     # print(movement_analyzer_2.calculate_frechet_for_one_subject("A", start=3, end=23))
 
-    frechet = movement_analyzer_2.calculate_frechet_for_all_subjects()
-    movement_analyzer_2.export_distance_summary("distance_summary_2.csv")
+    # frechet = movement_analyzer_2.calculate_frechet_for_all_subjects()
+    # movement_analyzer_2.export_distance_summary("distance_summary_2.csv")
     # print(frechet)
 
 
