@@ -102,7 +102,8 @@ class RotationAnalyzer:
             # diff = np.rad2deg(rad_diff)
             # complementary_diff = 180 - diff
             # return min(diff, complementary_diff)
-            return angle_difference(true_angle, estimation_angle)
+            diff = angle_difference(true_angle, estimation_angle)
+            return abs(min(diff, 360-diff))
         except (KeyError, IndexError):
             print(f"Error: {subject_name} or {trial_number} data files corrupted. Skipping...")
             return None
