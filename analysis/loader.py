@@ -95,9 +95,14 @@ class Loader:
                         "Make sure you have the correct filename for the meta file, otherwise exclude the folder" + str(
                             participant_dir))
 
-                print("Cannot load meta file, skipping")
+                else:
+                    print("Cannot load meta file, skipping")
+                    print(participant_dir)
+                    continue
             try:
                 subject.rotation_sequence = load_rotation(file_paths[ROTATION_FILE])
+                if len(list(subject.rotation_sequence.items())) < 20:
+                    raise ValueError
             except KeyError:
                 if not force:
                     raise CorruptedDataError(
@@ -105,16 +110,31 @@ class Loader:
                             participant_dir))
                 else:
                     print("Cannot load rotation file, skipping")
+                    print(participant_dir)
+                    continue
+
+            except ValueError:
+                print("Rotation File corrupted, skipping")
+                print(participant_dir)
+                continue
 
             try:
                 subject.movement_sequence = load_movement(file_paths[MOVEMENT_FILE], learning=learning)
+                if len(list(subject.rotation_sequence.items())) < 20:
+                    raise ValueError
             except KeyError:
                 if not force:
                     raise CorruptedDataError(
                         "Make sure you have the correct filename for the movement file, otherwise exclude the folder" + str(
                             participant_dir))
-
-                print("Cannot load movement file, skipping")
+                else:
+                    print("Cannot load movement file, skipping")
+                    print(participant_dir)
+                    continue
+            except ValueError:
+                print("Movement File corrupted, skipping")
+                print(participant_dir)
+                continue
 
             try:
                 subject.timeout_trials = load_timeout(file_paths[TIMEOUT_FILE])
@@ -124,7 +144,14 @@ class Loader:
                         "Make sure you have the correct filename for the timeout file, otherwise exclude the folder" + str(
                             participant_dir))
 
-                print("Cannot load timeout file, skipping")
+                else:
+                    print("Cannot load timeout file, skipping")
+                    print(participant_dir)
+                    continue
+            except ValueError:
+                print("Timeout File corrupted, skipping")
+                print(participant_dir)
+                continue
 
             self.subjects[participant_dir.name] = subject
 
@@ -184,7 +211,7 @@ def load_movement(path, learning=False):
                 skip_header_line = True
             else:
                 movement_trials[last_trial_number].append(MovementData.from_str(line))
-    if not learning and 99 in movement_trials:
+    if 99 in movement_trials:
         movement_trials.pop(99)
     return movement_trials
 

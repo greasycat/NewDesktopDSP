@@ -260,6 +260,9 @@ class MovementAnalyzer:
                 except TypeError:
                     print(f"Error in {subject_name}, {i}, skipping...")
                     continue
+                except KeyError:
+                    print(f"Error in {subject_name}, {i}, skipping...")
+                    continue
 
         with open(folder + "/" + subject_name + "_discrete.csv", "w") as f:
             # create csv writer
@@ -278,6 +281,9 @@ class MovementAnalyzer:
                                          movement["data"].rotation])
                         pass
                 except TypeError:
+                    print(f"Error in {subject_name}, {i}, skipping...")
+                    continue
+                except KeyError:
                     print(f"Error in {subject_name}, {i}, skipping...")
                     continue
 
@@ -445,6 +451,8 @@ class MovementAnalyzer:
                 except TypeError:
                     print("TypeError: " + subject + " " + str(n))
                     continue
+                except KeyError as e:
+                    print(f"Trial {e} is not found, skip plotting.")
 
     def plots_for_all_subjects(self, start=3, end=23, excluding=None, folder="path_plot", save_only=False):
         """
@@ -485,33 +493,35 @@ class MovementAnalyzer:
                     _, _, _, x, y, _ = self._get_cache(subject_name, n)
                 else:
                     _, _, _, x, y, _ = self._load_xy(subject_name, n)
+
+                # get name of the start and end points
+                source, destination = self.get_source_destination(subject_name, n)
+
+                # combine x and y into a single list of tuples
+                # pos in p and q here are 0-indexed
+                p = list(zip(x - 0.5, y - 0.5))
+                _, learning_path = self.learning_map.get_learning_path(source, destination)
+                _, reverse_learning_path = self.learning_map.get_reverse_learning_path(source, destination)
+                _, shortcut = self.shortcut_map.get_shortest_path(source, destination)
+
+                topo_r = self.strategy.get_path(source, destination)
+
+                failure = 1 if n in self.subjects[subject_name].timeout_trials else 0
+
+                # calculate Frechet distance
+                import similaritymeasures
+                distances[n] = {"learn": similaritymeasures.frechet_dist(p, learning_path),
+                                "learn_reversed": similaritymeasures.frechet_dist(p, reverse_learning_path),
+                                "shortcut": similaritymeasures.frechet_dist(p, shortcut),
+                                "topo": similaritymeasures.frechet_dist(p, topo_r),
+                                "failure": failure,
+                                "trial": n
+                                }
             except TypeError:
                 print("TypeError: " + subject_name + " " + str(n))
                 continue
-
-            # get name of the start and end points
-            source, destination = self.get_source_destination(subject_name, n)
-
-            # combine x and y into a single list of tuples
-            # pos in p and q here are 0-indexed
-            p = list(zip(x - 0.5, y - 0.5))
-            _, learning_path = self.learning_map.get_learning_path(source, destination)
-            _, reverse_learning_path = self.learning_map.get_reverse_learning_path(source, destination)
-            _, shortcut = self.shortcut_map.get_shortest_path(source, destination)
-
-            topo_r = self.strategy.get_path(source, destination)
-
-            failure = 1 if n in self.subjects[subject_name].timeout_trials else 0
-
-            # calculate Frechet distance
-            import similaritymeasures
-            distances[n] = {"learn": similaritymeasures.frechet_dist(p, learning_path),
-                            "learn_reversed": similaritymeasures.frechet_dist(p, reverse_learning_path),
-                            "shortcut": similaritymeasures.frechet_dist(p, shortcut),
-                            "topo": similaritymeasures.frechet_dist(p, topo_r),
-                            "failure": failure,
-                            "trial": n
-                            }
+            except KeyError as e:
+                print(f"Trial {e} is not found, skip plotting.")
 
         return distances
         pass
@@ -595,4 +605,7 @@ class MovementAnalyzer:
                                          ])
                     except IndexError:
                         print("IndexError: " + subject_name + " " + str(n) + ", skipping...")
+                        continue
+                    except KeyError:
+                        print("KeyError: " + subject_name + " " + str(n) + ", skipping...")
                         continue

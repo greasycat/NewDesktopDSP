@@ -6,6 +6,7 @@ from analysis.loader import Loader
 
 from math import cos, sin, fmod
 from typing import Dict, Optional, List
+import csv
 
 
 def angle_difference(angle1: float, angle2: float) -> float:
@@ -30,24 +31,23 @@ class RotationAnalyzer:
         """
         rotation_sequence = self.loader.subjects[subject_name].rotation_sequence
         trial_name = rotation_sequence[trial_number].trial_name
-        true_angle = self.loader.trial_configuration.get_true_angle(trial_name)/180*np.pi
-        estimation_angle = rotation_sequence[trial_number].rotation/180*np.pi
+        true_angle = self.loader.trial_configuration.get_true_angle(trial_name) / 180 * np.pi
+        estimation_angle = rotation_sequence[trial_number].rotation / 180 * np.pi
 
         x = np.linspace(-5, 5, 100)
-        y1 = np.tan(true_angle + np.pi/2) * x
-        y2 = np.tan(estimation_angle + np.pi/2) * x
+        y1 = np.tan(true_angle + np.pi / 2) * x
+        y2 = np.tan(estimation_angle + np.pi / 2) * x
 
         r = 4
         a = np.linspace(0, 2 * np.pi, 100)
         xs = r * np.cos(a)
         ys = r * np.sin(a)
 
-
         fig, ax = plt.subplots()
 
         ax.plot(xs, ys, label='Circle')
-        ax.plot(x, np.tan(np.pi/2)*x, label='90', color='black')
-        ax.plot(x, np.tan(np.pi)*x, label='180', color='black')
+        ax.plot(x, np.tan(np.pi / 2) * x, label='90', color='black')
+        ax.plot(x, np.tan(np.pi) * x, label='180', color='black')
 
         ax.plot(x, y1, label='True Angle')
         ax.plot(x, y2, label='Estimation Angle')
@@ -55,7 +55,7 @@ class RotationAnalyzer:
         ax.set_xlim(-5, 5)
         ax.set_ylim(-5, 5)
         ax.set_title(f"Estimation Error for {subject_name} Trial {trial_name}"
-                     f"\nTrue Angle: {true_angle*180/np.pi} Estimation Angle: {estimation_angle*180/np.pi}"
+                     f"\nTrue Angle: {true_angle * 180 / np.pi} Estimation Angle: {estimation_angle * 180 / np.pi}"
                      f"\n{angle_difference(true_angle * 180 / np.pi, estimation_angle * 180 / np.pi)}")
         ax.set_xlabel('x')
         ax.set_ylabel('y')
@@ -103,7 +103,7 @@ class RotationAnalyzer:
             # complementary_diff = 180 - diff
             # return min(diff, complementary_diff)
             diff = angle_difference(true_angle, estimation_angle)
-            return abs(min(diff, 360-diff))
+            return abs(min(diff, 360 - diff))
         except (KeyError, IndexError):
             print(f"Error: {subject_name} or {trial_number} data files corrupted. Skipping...")
             return None
@@ -148,3 +148,28 @@ class RotationAnalyzer:
                 continue
             errors[subject] = self.calculate_estimation_error_for_one_subject(subject, start, end)
         return errors
+
+    @staticmethod
+    def export(errors, file_name: str = 'estimation_errors.csv'):
+        """
+        Export the estimation errors to a csv file.
+        :param errors: The estimation errors.
+        :param file_name: The name of the csv file.
+        """
+        with open(file_name, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile, delimiter=',')
+            writer.writerow(['Subject', 'Trial', 'Estimation Error'])
+            for subject in errors:
+                for trial in errors[subject]:
+                    writer.writerow([subject, trial, errors[subject][trial]])
+
+    def export_estimation_error_for_all_subjects(self, start: int = 3, end: int = 23,
+                                                 file_name: str = 'estimation_errors.csv'):
+        """
+        Export the estimation errors for all subjects in the dataset.
+        :param start: The index of the first trial (inclusive).
+        :param end: The index of the last trial (exclusive).
+        :param file_name: The name of the csv file.
+        """
+        errors = self.calculate_estimation_error_for_all_subjects(start, end)
+        self.export(errors, file_name)
